@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useCallback } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import {
   LineChart,
@@ -32,7 +32,7 @@ import {
   ArrowRight,
   TrendingDown,
 } from "lucide-react";
-import { getShareText } from "@/lib/share";
+import { ShareModal } from "@/components/share-modal";
 
 interface DashboardDebt extends DebtInput {
   originalBalance?: number;
@@ -77,7 +77,7 @@ function getRateBorderClass(rate: number): string {
 const QUICK_WIN_AMOUNT = 5000;
 
 export function DashboardClient({ debts }: Props) {
-  const [copied, setCopied] = useState(false);
+  const [shareOpen, setShareOpen] = useState(false);
 
   // Current plan (avalanche, no extra)
   const result = useMemo(() => calculatePayoff(debts, "avalanche", 0), [debts]);
@@ -134,17 +134,6 @@ export function DashboardClient({ debts }: Props) {
   }, [result]);
 
   const closureMonths = result.debtClosures.map((c) => c.closedAtMonth);
-
-  // Share
-  const handleShare = useCallback(async () => {
-    try {
-      await navigator.clipboard.writeText(getShareText());
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2500);
-    } catch {
-      // fallback: nothing
-    }
-  }, []);
 
   return (
     <div className="max-w-4xl mx-auto space-y-8">
@@ -520,18 +509,21 @@ export function DashboardClient({ debts }: Props) {
           </Button>
           <Button
             variant="outline"
-            className={`rounded-xl border transition-all duration-200 ${
-              copied
-                ? "bg-emerald-50 text-[#059669] border-emerald-200"
-                : "border-[#e2e8f0] text-[#64748b] hover:bg-[#f8fafc] hover:text-[#0f172a]"
-            }`}
-            onClick={handleShare}
+            className="rounded-xl border border-[#e2e8f0] text-[#64748b] hover:bg-[#f8fafc] hover:text-[#0f172a] transition-colors"
+            onClick={() => setShareOpen(true)}
           >
             <Share2 className="w-4 h-4 mr-1.5" />
-            {copied ? "Скопировано!" : "Поделиться"}
+            Поделиться
           </Button>
         </div>
       </div>
+
+      {/* Share modal */}
+      <ShareModal
+        open={shareOpen}
+        onClose={() => setShareOpen(false)}
+        data={{ type: "overview" }}
+      />
     </div>
   );
 }

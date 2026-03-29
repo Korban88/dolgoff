@@ -1,0 +1,57 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id                    String    @id @default(cuid())
+  email                 String    @unique
+  passwordHash          String
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  subscriptionTier      String    @default("free")
+  subscriptionExpiresAt DateTime?
+  debts                 Debt[]
+  plans                 Plan[]
+}
+
+model Debt {
+  id              String         @id @default(cuid())
+  userId          String
+  user            User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  creditorName    String
+  debtType        String
+  currentBalance  Float
+  originalBalance Float?
+  interestRate    Float
+  minimumPayment  Float
+  paymentDay      Int?
+  isClosed        Boolean        @default(false)
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  snapshots       DebtSnapshot[]
+  @@index([userId])
+}
+
+model DebtSnapshot {
+  id         String   @id @default(cuid())
+  debtId     String
+  debt       Debt     @relation(fields: [debtId], references: [id], onDelete: Cascade)
+  balance    Float
+  recordedAt DateTime @default(now())
+  @@index([debtId])
+}
+
+model Plan {
+  id                  String   @id @default(cuid())
+  userId              String
+  user                User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  strategy            String
+  extraMonthlyPayment Float    @default(0)
+  createdAt           DateTime @default(now())
+  @@index([userId])
+}

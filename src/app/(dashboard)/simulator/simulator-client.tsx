@@ -20,14 +20,15 @@ import {
   type DebtInput,
   type Strategy,
 } from "@/lib/debt-calculator";
+import { TrendingDown, Clock, PiggyBank, CheckCircle2 } from "lucide-react";
 
 interface Props {
   debts: DebtInput[];
 }
 
 const STRATEGIES: { value: Strategy; label: string }[] = [
-  { value: "avalanche", label: "Лавина (дорогой сначала)" },
-  { value: "snowball", label: "Снежный ком (маленький сначала)" },
+  { value: "avalanche", label: "Лавина" },
+  { value: "snowball", label: "Снежный ком" },
   { value: "proportional", label: "Пропорционально" },
 ];
 
@@ -64,39 +65,61 @@ export function SimulatorClient({ debts }: Props) {
   const payoffOrder = improved.debtClosures;
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
-      <h1 className="text-2xl font-bold text-[#0f172a]">Симулятор «Что если»</h1>
+    <div className="max-w-4xl mx-auto space-y-7">
+      {/* Header */}
+      <div>
+        <h1 className="text-2xl font-bold text-[#0f172a] tracking-tight">Симулятор «Что если»</h1>
+        <p className="text-sm text-[#64748b] mt-0.5">Узнайте, как доплата меняет всю картину</p>
+      </div>
 
       {/* Extra payment slider */}
-      <Card className="border-[#e2e8f0]">
-        <CardHeader>
-          <CardTitle className="text-base text-[#0f172a]">Дополнительный платёж сверх минимума</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-[#64748b]">0 ₽</span>
-            <span className="text-2xl font-bold text-[#1e40af]">{formatCurrency(extra)}</span>
-            <span className="text-sm text-[#64748b]">50 000 ₽</span>
+      <Card className="border-0 shadow-sm rounded-2xl overflow-hidden bg-white">
+        <CardContent className="p-6 space-y-5">
+          <div>
+            <p className="text-sm font-semibold text-[#0f172a] mb-1">Дополнительный платёж сверх минимума</p>
+            <p className="text-xs text-[#94a3b8]">Двигайте ползунок, чтобы увидеть эффект</p>
           </div>
-          <input
-            type="range"
-            min={0}
-            max={50000}
-            step={1000}
-            value={extra}
-            onChange={(e) => setExtra(Number(e.target.value))}
-            className="w-full accent-[#1e40af]"
-          />
+          <div className="flex items-center justify-between gap-4">
+            <span className="text-sm text-[#94a3b8] shrink-0">0 ₽</span>
+            <div className="text-center">
+              <span className="text-3xl font-bold text-[#1e40af]">{formatCurrency(extra)}</span>
+              <p className="text-xs text-[#94a3b8] mt-0.5">в месяц</p>
+            </div>
+            <span className="text-sm text-[#94a3b8] shrink-0">50 000 ₽</span>
+          </div>
+          <div className="relative pt-1">
+            <input
+              type="range"
+              min={0}
+              max={50000}
+              step={1000}
+              value={extra}
+              onChange={(e) => setExtra(Number(e.target.value))}
+              className="w-full h-2 appearance-none rounded-full cursor-pointer accent-[#1e40af]"
+              style={{
+                background: `linear-gradient(to right, #1e40af ${(extra / 50000) * 100}%, #e2e8f0 ${(extra / 50000) * 100}%)`,
+              }}
+            />
+            <div className="flex justify-between text-xs text-[#cbd5e1] mt-2">
+              {[0, 10000, 20000, 30000, 40000, 50000].map((v) => (
+                <span key={v}>{v === 0 ? "0" : `${v / 1000}k`}</span>
+              ))}
+            </div>
+          </div>
         </CardContent>
       </Card>
 
       {/* Strategy tabs */}
       <div className="space-y-2">
-        <p className="text-sm font-medium text-[#0f172a]">Стратегия погашения</p>
+        <p className="text-sm font-semibold text-[#0f172a]">Стратегия погашения</p>
         <Tabs value={strategy} onValueChange={(v) => setStrategy(v as Strategy)}>
-          <TabsList className="bg-[#f1f5f9]">
+          <TabsList className="bg-[#f1f5f9] rounded-xl p-1 h-auto">
             {STRATEGIES.map((s) => (
-              <TabsTrigger key={s.value} value={s.value} className="text-xs sm:text-sm">
+              <TabsTrigger
+                key={s.value}
+                value={s.value}
+                className="rounded-lg text-xs sm:text-sm px-3 py-2 data-[state=active]:bg-white data-[state=active]:text-[#1e40af] data-[state=active]:shadow-sm"
+              >
                 {s.label}
               </TabsTrigger>
             ))}
@@ -106,45 +129,73 @@ export function SimulatorClient({ debts }: Props) {
 
       {/* Results */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <Card className="border-[#e2e8f0]">
-          <CardContent className="pt-5">
-            <p className="text-sm text-[#64748b]">Новый срок погашения</p>
-            <p className="text-2xl font-bold text-[#1e40af] mt-1">{formatMonths(improved.totalMonths)}</p>
-            {savedMonths > 0 && (
-              <p className="text-sm text-[#059669] mt-0.5">на {formatMonths(savedMonths)} быстрее</p>
-            )}
+        <Card className="border-0 shadow-sm rounded-2xl bg-white overflow-hidden">
+          <CardContent className="p-5">
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="text-sm text-[#64748b] font-medium">Новый срок погашения</p>
+                <p className="text-2xl font-bold text-[#1e40af] mt-1.5">{formatMonths(improved.totalMonths)}</p>
+                {savedMonths > 0 ? (
+                  <p className="text-sm text-[#059669] font-semibold mt-1">на {formatMonths(savedMonths)} быстрее</p>
+                ) : (
+                  <p className="text-sm text-[#94a3b8] mt-1">добавьте доплату</p>
+                )}
+              </div>
+              <div className="w-11 h-11 rounded-xl bg-blue-50 flex items-center justify-center shrink-0">
+                <Clock className="w-5 h-5 text-[#1e40af]" />
+              </div>
+            </div>
           </CardContent>
         </Card>
-        <Card className="border-[#e2e8f0]">
-          <CardContent className="pt-5">
-            <p className="text-sm text-[#64748b]">Переплата по процентам</p>
-            <p className="text-2xl font-bold text-[#f59e0b] mt-1">{formatCurrency(improved.totalInterestPaid)}</p>
-            {savedMoney > 0 && (
-              <p className="text-sm text-[#059669] mt-0.5">экономия {formatCurrency(savedMoney)}</p>
-            )}
+
+        <Card className={`border-0 shadow-sm rounded-2xl overflow-hidden ${savedMoney > 0 ? "bg-gradient-to-br from-[#f0fdf4] to-[#ecfdf5]" : "bg-white"}`}>
+          <CardContent className="p-5">
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="text-sm text-[#64748b] font-medium">Экономия на процентах</p>
+                {savedMoney > 0 ? (
+                  <>
+                    <p className="text-3xl font-bold text-[#059669] mt-1.5">{formatCurrency(savedMoney)}</p>
+                    <p className="text-sm text-[#059669] font-medium mt-1">останется в вашем кармане</p>
+                  </>
+                ) : (
+                  <>
+                    <p className="text-2xl font-bold text-[#f59e0b] mt-1.5">{formatCurrency(improved.totalInterestPaid)}</p>
+                    <p className="text-sm text-[#94a3b8] mt-1">переплата по процентам</p>
+                  </>
+                )}
+              </div>
+              <div className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 ${savedMoney > 0 ? "bg-emerald-100" : "bg-amber-50"}`}>
+                {savedMoney > 0
+                  ? <PiggyBank className="w-5 h-5 text-[#059669]" />
+                  : <TrendingDown className="w-5 h-5 text-[#f59e0b]" />
+                }
+              </div>
+            </div>
           </CardContent>
         </Card>
       </div>
 
       {/* Chart */}
-      <Card className="border-[#e2e8f0]">
-        <CardHeader>
-          <CardTitle className="text-base text-[#0f172a]">Сравнение планов погашения</CardTitle>
+      <Card className="border-0 shadow-sm rounded-2xl bg-white">
+        <CardHeader className="px-6 pt-5 pb-0">
+          <CardTitle className="text-base font-bold text-[#0f172a]">Сравнение планов погашения</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="pt-4 pb-4">
           <ResponsiveContainer width="100%" height={280}>
             <LineChart data={chartData} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+              <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
               <XAxis
                 dataKey="month"
-                tick={{ fontSize: 11, fill: "#64748b" }}
-                label={{ value: "Месяц", position: "insideBottom", offset: -2, fontSize: 11, fill: "#64748b" }}
+                tick={{ fontSize: 11, fill: "#94a3b8" }}
+                label={{ value: "Месяц", position: "insideBottom", offset: -2, fontSize: 11, fill: "#94a3b8" }}
               />
               <YAxis
-                tick={{ fontSize: 11, fill: "#64748b" }}
+                tick={{ fontSize: 11, fill: "#94a3b8" }}
                 tickFormatter={(v) => `${Math.round(v / 1000)}k`}
               />
               <Tooltip
+                contentStyle={{ borderRadius: "12px", border: "1px solid #e8edf4", boxShadow: "0 4px 16px rgba(0,0,0,0.08)" }}
                 formatter={(value, name) => [
                   formatCurrency(Number(value)),
                   name === "baseline" ? "Только минимум" : "С доплатой",
@@ -157,7 +208,7 @@ export function SimulatorClient({ debts }: Props) {
               <Line
                 type="monotone"
                 dataKey="baseline"
-                stroke="#94a3b8"
+                stroke="#cbd5e1"
                 strokeWidth={2}
                 strokeDasharray="5 3"
                 dot={false}
@@ -167,7 +218,7 @@ export function SimulatorClient({ debts }: Props) {
                 type="monotone"
                 dataKey="improved"
                 stroke="#1e40af"
-                strokeWidth={2}
+                strokeWidth={2.5}
                 dot={false}
                 name="improved"
               />
@@ -179,22 +230,25 @@ export function SimulatorClient({ debts }: Props) {
       {/* Payoff order */}
       {payoffOrder.length > 0 && (
         <div className="space-y-3">
-          <h2 className="text-base font-semibold text-[#0f172a]">Порядок закрытия долгов</h2>
+          <h2 className="text-lg font-bold text-[#0f172a]">Порядок закрытия долгов</h2>
           <div className="space-y-2">
             {payoffOrder.map((c, i) => (
-              <div key={c.id} className="flex items-center gap-3 bg-white border border-[#e2e8f0] rounded-lg px-4 py-3">
-                <span className="w-6 h-6 rounded-full bg-[#eff6ff] text-[#1e40af] text-xs font-bold flex items-center justify-center shrink-0">
+              <div key={c.id} className="flex items-center gap-3 bg-white border-0 shadow-sm rounded-2xl px-5 py-4">
+                <div className="w-8 h-8 rounded-xl bg-[#eff6ff] text-[#1e40af] text-sm font-bold flex items-center justify-center shrink-0">
                   {i + 1}
-                </span>
-                <span className="flex-1 text-[#0f172a] text-sm font-medium">{c.creditorName}</span>
-                <span className="text-sm text-[#64748b]">мес. {c.closedAtMonth}</span>
+                </div>
+                <span className="flex-1 text-[#0f172a] font-medium">{c.creditorName}</span>
+                <div className="flex items-center gap-1.5 text-sm text-[#64748b]">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-[#059669]" />
+                  <span>месяц {c.closedAtMonth}</span>
+                </div>
               </div>
             ))}
           </div>
         </div>
       )}
 
-      <p className="text-xs text-[#64748b] mt-4">
+      <p className="text-xs text-[#94a3b8]">
         Расчёт носит информационный характер и не является финансовой консультацией.
         Реальные суммы зависят от условий договора, комиссий и других факторов.
       </p>

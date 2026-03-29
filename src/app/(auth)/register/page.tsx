@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -53,96 +52,93 @@ export default function RegisterPage() {
   }
 
   return (
-    <Card className="w-full max-w-md shadow-sm border-[#e2e8f0]">
-      <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl font-bold text-[#0f172a]">Регистрация в ДолгOFF</CardTitle>
-        <CardDescription className="text-[#64748b]">
-          Создайте аккаунт, чтобы начать работу с долгами
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {error && (
-            <Alert variant="destructive">
-              <AlertDescription>{error}</AlertDescription>
-            </Alert>
-          )}
+    <div className="bg-white rounded-2xl shadow-lg border border-[#e2e8f0] p-8 space-y-6">
+      <div className="space-y-1">
+        <h1 className="text-2xl font-bold text-[#0f172a] tracking-tight">Создать аккаунт</h1>
+        <p className="text-[#64748b] text-sm">Начните путь к финансовой ясности</p>
+      </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="email" className="text-[#0f172a]">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="you@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              autoComplete="email"
-              className="border-[#e2e8f0]"
-            />
-          </div>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        {error && (
+          <Alert variant="destructive">
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
 
-          <div className="space-y-2">
-            <Label htmlFor="password" className="text-[#0f172a]">Пароль</Label>
-            <Input
-              id="password"
-              type="password"
-              placeholder="Минимум 8 символов"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              minLength={8}
-              autoComplete="new-password"
-              className="border-[#e2e8f0]"
-            />
-          </div>
+        <div className="space-y-1.5">
+          <Label htmlFor="email" className="text-[#0f172a] text-sm font-medium">Email</Label>
+          <Input
+            id="email"
+            type="email"
+            placeholder="you@example.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            autoComplete="email"
+            className="h-11 rounded-xl border-[#e2e8f0] focus:border-[#3b82f6] bg-white"
+          />
+        </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="confirmPassword" className="text-[#0f172a]">Повторите пароль</Label>
-            <Input
-              id="confirmPassword"
-              type="password"
-              placeholder="Повторите пароль"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              required
-              autoComplete="new-password"
-              className="border-[#e2e8f0]"
-            />
-          </div>
+        <div className="space-y-1.5">
+          <Label htmlFor="password" className="text-[#0f172a] text-sm font-medium">Пароль</Label>
+          <Input
+            id="password"
+            type="password"
+            placeholder="Минимум 8 символов"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            minLength={8}
+            autoComplete="new-password"
+            className="h-11 rounded-xl border-[#e2e8f0] focus:border-[#3b82f6] bg-white"
+          />
+        </div>
 
-          <div className="flex items-start gap-3 pt-1">
-            <input
-              id="consentPD"
-              type="checkbox"
-              checked={consentPD}
-              onChange={(e) => setConsentPD(e.target.checked)}
-              className="mt-0.5 h-4 w-4 rounded border-[#e2e8f0] accent-[#1e40af]"
-            />
-            <Label htmlFor="consentPD" className="text-sm text-[#64748b] font-normal leading-snug cursor-pointer">
-              Я даю согласие на обработку персональных данных в соответствии с{" "}
-              <Link href="/privacy" className="text-[#1e40af] hover:underline" target="_blank">
-                Политикой конфиденциальности
-              </Link>
-            </Label>
-          </div>
+        <div className="space-y-1.5">
+          <Label htmlFor="confirmPassword" className="text-[#0f172a] text-sm font-medium">Повторите пароль</Label>
+          <Input
+            id="confirmPassword"
+            type="password"
+            placeholder="Повторите пароль"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            required
+            autoComplete="new-password"
+            className="h-11 rounded-xl border-[#e2e8f0] focus:border-[#3b82f6] bg-white"
+          />
+        </div>
 
-          <Button
-            type="submit"
-            className="w-full bg-[#1e40af] hover:bg-[#1d3a9e] text-white"
-            disabled={loading || !consentPD}
-          >
-            {loading ? "Регистрация..." : "Зарегистрироваться"}
-          </Button>
-
-          <p className="text-center text-sm text-[#64748b]">
-            Уже есть аккаунт?{" "}
-            <Link href="/login" className="text-[#1e40af] hover:underline font-medium">
-              Войти
+        <div className="flex items-start gap-3 py-1">
+          <input
+            id="consentPD"
+            type="checkbox"
+            checked={consentPD}
+            onChange={(e) => setConsentPD(e.target.checked)}
+            className="mt-0.5 h-4 w-4 rounded border-[#e2e8f0] accent-[#1e40af]"
+          />
+          <Label htmlFor="consentPD" className="text-sm text-[#64748b] font-normal leading-snug cursor-pointer">
+            Я даю согласие на обработку персональных данных в соответствии с{" "}
+            <Link href="/privacy" className="text-[#1e40af] hover:underline" target="_blank">
+              Политикой конфиденциальности
             </Link>
-          </p>
-        </form>
-      </CardContent>
-    </Card>
+          </Label>
+        </div>
+
+        <Button
+          type="submit"
+          className="w-full h-11 rounded-xl bg-[#1e40af] hover:bg-[#1d3a9e] text-white font-semibold text-base transition-all duration-200"
+          disabled={loading || !consentPD}
+        >
+          {loading ? "Создание аккаунта..." : "Зарегистрироваться"}
+        </Button>
+
+        <p className="text-center text-sm text-[#64748b]">
+          Уже есть аккаунт?{" "}
+          <Link href="/login" className="text-[#1e40af] hover:text-[#1d3a9e] font-semibold transition-colors">
+            Войти
+          </Link>
+        </p>
+      </form>
+    </div>
   );
 }

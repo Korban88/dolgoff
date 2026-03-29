@@ -4,7 +4,6 @@ import { Suspense, useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -42,15 +41,15 @@ function LoginForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-5">
       {error && (
         <Alert variant="destructive">
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       )}
 
-      <div className="space-y-2">
-        <Label htmlFor="email" className="text-[#0f172a]">Email</Label>
+      <div className="space-y-1.5">
+        <Label htmlFor="email" className="text-[#0f172a] text-sm font-medium">Email</Label>
         <Input
           id="email"
           type="email"
@@ -59,12 +58,12 @@ function LoginForm() {
           onChange={(e) => setEmail(e.target.value)}
           required
           autoComplete="email"
-          className="border-[#e2e8f0]"
+          className="h-11 rounded-xl border-[#e2e8f0] focus:border-[#3b82f6] bg-white"
         />
       </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="password" className="text-[#0f172a]">Пароль</Label>
+      <div className="space-y-1.5">
+        <Label htmlFor="password" className="text-[#0f172a] text-sm font-medium">Пароль</Label>
         <Input
           id="password"
           type="password"
@@ -73,13 +72,13 @@ function LoginForm() {
           onChange={(e) => setPassword(e.target.value)}
           required
           autoComplete="current-password"
-          className="border-[#e2e8f0]"
+          className="h-11 rounded-xl border-[#e2e8f0] focus:border-[#3b82f6] bg-white"
         />
       </div>
 
       <Button
         type="submit"
-        className="w-full bg-[#1e40af] hover:bg-[#1d3a9e] text-white"
+        className="w-full h-11 rounded-xl bg-[#1e40af] hover:bg-[#1d3a9e] text-white font-semibold text-base transition-all duration-200"
         disabled={loading}
       >
         {loading ? "Вход..." : "Войти"}
@@ -87,7 +86,7 @@ function LoginForm() {
 
       <p className="text-center text-sm text-[#64748b]">
         Нет аккаунта?{" "}
-        <Link href="/register" className="text-[#1e40af] hover:underline font-medium">
+        <Link href="/register" className="text-[#1e40af] hover:text-[#1d3a9e] font-semibold transition-colors">
           Зарегистрироваться
         </Link>
       </p>
@@ -97,18 +96,14 @@ function LoginForm() {
 
 export default function LoginPage() {
   return (
-    <Card className="w-full max-w-md shadow-sm border-[#e2e8f0]">
-      <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl font-bold text-[#0f172a]">Вход в ДолгOFF</CardTitle>
-        <CardDescription className="text-[#64748b]">
-          Введите email и пароль для входа
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <Suspense fallback={null}>
-          <LoginForm />
-        </Suspense>
-      </CardContent>
-    </Card>
+    <div className="bg-white rounded-2xl shadow-lg border border-[#e2e8f0] p-8 space-y-6">
+      <div className="space-y-1">
+        <h1 className="text-2xl font-bold text-[#0f172a] tracking-tight">Добро пожаловать</h1>
+        <p className="text-[#64748b] text-sm">Введите данные для входа в аккаунт</p>
+      </div>
+      <Suspense fallback={null}>
+        <LoginForm />
+      </Suspense>
+    </div>
   );
 }

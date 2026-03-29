@@ -101,3 +101,34 @@
     transition: all 0.2s ease;
   }
 }
+
+/* Range input thumb styling */
+@layer base {
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #1e40af;
+    cursor: pointer;
+    border: 3px solid #fff;
+    box-shadow: 0 1px 6px rgba(30, 64, 175, 0.35);
+    transition: box-shadow 0.15s ease;
+  }
+  input[type="range"]::-moz-range-thumb {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #1e40af;
+    cursor: pointer;
+    border: 3px solid #fff;
+    box-shadow: 0 1px 6px rgba(30, 64, 175, 0.35);
+  }
+  input[type="range"]::-webkit-slider-thumb:hover {
+    box-shadow: 0 2px 10px rgba(30, 64, 175, 0.5);
+  }
+  input[type="range"]:focus::-webkit-slider-thumb {
+    box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.2);
+  }
+}

@@ -24,11 +24,9 @@ export default async function DebtsPage() {
     <div className="max-w-3xl mx-auto space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-[#0f172a]">Мои долги</h1>
-        <Button asChild className="bg-[#1e40af] hover:bg-[#1d3a9e] text-white">
-          <Link href="/debts/new">
-            <Plus className="w-4 h-4 mr-2" />
-            Добавить долг
-          </Link>
+        <Button render={<Link href="/debts/new" />} className="bg-[#1e40af] hover:bg-[#1d3a9e] text-white">
+          <Plus className="w-4 h-4 mr-2" />
+          Добавить долг
         </Button>
       </div>
 
@@ -36,8 +34,8 @@ export default async function DebtsPage() {
         <Card className="border-[#e2e8f0]">
           <CardContent className="py-12 text-center">
             <p className="text-[#64748b] mb-4">У вас пока нет активных долгов</p>
-            <Button asChild className="bg-[#1e40af] hover:bg-[#1d3a9e] text-white">
-              <Link href="/debts/new">Добавить первый долг</Link>
+            <Button render={<Link href="/debts/new" />} className="bg-[#1e40af] hover:bg-[#1d3a9e] text-white">
+              Добавить первый долг
             </Button>
           </CardContent>
         </Card>

@@ -64,8 +64,8 @@ export function DashboardClient({ debts }: Props) {
     <div className="max-w-4xl mx-auto space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-[#0f172a]">Дашборд</h1>
-        <Button asChild size="sm" className="bg-[#1e40af] hover:bg-[#1d3a9e] text-white">
-          <Link href="/debts/new"><Plus className="w-4 h-4 mr-1" />Добавить долг</Link>
+        <Button render={<Link href="/debts/new" />} size="sm" className="bg-[#1e40af] hover:bg-[#1d3a9e] text-white">
+          <Plus className="w-4 h-4 mr-1" />Добавить долг
         </Button>
       </div>
 
@@ -174,7 +174,7 @@ export function DashboardClient({ debts }: Props) {
                   tickFormatter={(v) => `${Math.round(v / 1000)}k`}
                 />
                 <Tooltip
-                  formatter={(value: number) => [formatCurrency(value), "Остаток"]}
+                  formatter={(value) => [formatCurrency(Number(value)), "Остаток"]}
                   labelFormatter={(label) => `Месяц ${label}`}
                 />
                 <Legend />

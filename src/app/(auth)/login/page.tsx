@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") ?? "/dashboard";
@@ -42,6 +42,61 @@ export default function LoginPage() {
   }
 
   return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      {error && (
+        <Alert variant="destructive">
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      )}
+
+      <div className="space-y-2">
+        <Label htmlFor="email" className="text-[#0f172a]">Email</Label>
+        <Input
+          id="email"
+          type="email"
+          placeholder="you@example.com"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+          autoComplete="email"
+          className="border-[#e2e8f0]"
+        />
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="password" className="text-[#0f172a]">Пароль</Label>
+        <Input
+          id="password"
+          type="password"
+          placeholder="Минимум 8 символов"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+          autoComplete="current-password"
+          className="border-[#e2e8f0]"
+        />
+      </div>
+
+      <Button
+        type="submit"
+        className="w-full bg-[#1e40af] hover:bg-[#1d3a9e] text-white"
+        disabled={loading}
+      >
+        {loading ? "Вход..." : "Войти"}
+      </Button>
+
+      <p className="text-center text-sm text-[#64748b]">
+        Нет аккаунта?{" "}
+        <Link href="/register" className="text-[#1e40af] hover:underline font-medium">
+          Зарегистрироваться
+        </Link>
+      </p>
+    </form>
+  );
+}
+
+export default function LoginPage() {
+  return (
     <Card className="w-full max-w-md shadow-sm border-[#e2e8f0]">
       <CardHeader className="space-y-1">
         <CardTitle className="text-2xl font-bold text-[#0f172a]">Вход в ДолгOFF</CardTitle>
@@ -50,56 +105,9 @@ export default function LoginPage() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {error && (
-            <Alert variant="destructive">
-              <AlertDescription>{error}</AlertDescription>
-            </Alert>
-          )}
-
-          <div className="space-y-2">
-            <Label htmlFor="email" className="text-[#0f172a]">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="you@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              autoComplete="email"
-              className="border-[#e2e8f0]"
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="password" className="text-[#0f172a]">Пароль</Label>
-            <Input
-              id="password"
-              type="password"
-              placeholder="Минимум 8 символов"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              autoComplete="current-password"
-              className="border-[#e2e8f0]"
-            />
-          </div>
-
-          <Button
-            type="submit"
-            className="w-full bg-[#1e40af] hover:bg-[#1d3a9e] text-white"
-            disabled={loading}
-          >
-            {loading ? "Вход..." : "Войти"}
-          </Button>
-
-          <p className="text-center text-sm text-[#64748b]">
-            Нет аккаунта?{" "}
-            <Link href="/register" className="text-[#1e40af] hover:underline font-medium">
-              Зарегистрироваться
-            </Link>
-          </p>
-        </form>
+        <Suspense fallback={null}>
+          <LoginForm />
+        </Suspense>
       </CardContent>
     </Card>
   );

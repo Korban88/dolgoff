@@ -11,11 +11,11 @@ export default function LandingPage() {
         <div className="max-w-5xl mx-auto flex items-center justify-between">
           <span className="text-xl font-bold text-[#1e40af]">ДолгOFF</span>
           <div className="flex gap-3">
-            <Button asChild variant="ghost" className="text-[#64748b] hover:text-[#0f172a]">
-              <Link href="/login">Войти</Link>
+            <Button render={<Link href="/login" />} variant="ghost" className="text-[#64748b] hover:text-[#0f172a]">
+              Войти
             </Button>
-            <Button asChild className="bg-[#1e40af] hover:bg-[#1d3a9e] text-white">
-              <Link href="/register">Начать бесплатно</Link>
+            <Button render={<Link href="/register" />} className="bg-[#1e40af] hover:bg-[#1d3a9e] text-white">
+              Начать бесплатно
             </Button>
           </div>
         </div>
@@ -32,11 +32,11 @@ export default function LandingPage() {
             Сравните стратегии погашения и найдите самый выгодный путь.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <Button asChild size="lg" className="bg-[#1e40af] hover:bg-[#1d3a9e] text-white px-8">
-              <Link href="/register">Попробовать бесплатно</Link>
+            <Button render={<Link href="/register" />} size="lg" className="bg-[#1e40af] hover:bg-[#1d3a9e] text-white px-8">
+              Попробовать бесплатно
             </Button>
-            <Button asChild size="lg" variant="outline" className="border-[#e2e8f0] text-[#64748b]">
-              <Link href="/login">Уже есть аккаунт</Link>
+            <Button render={<Link href="/login" />} size="lg" variant="outline" className="border-[#e2e8f0] text-[#64748b]">
+              Уже есть аккаунт
             </Button>
           </div>
         </div>

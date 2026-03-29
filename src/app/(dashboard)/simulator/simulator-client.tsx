@@ -145,8 +145,8 @@ export function SimulatorClient({ debts }: Props) {
                 tickFormatter={(v) => `${Math.round(v / 1000)}k`}
               />
               <Tooltip
-                formatter={(value: number, name: string) => [
-                  formatCurrency(value),
+                formatter={(value, name) => [
+                  formatCurrency(Number(value)),
                   name === "baseline" ? "Только минимум" : "С доплатой",
                 ]}
                 labelFormatter={(label) => `Месяц ${label}`}

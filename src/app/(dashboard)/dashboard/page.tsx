@@ -28,8 +28,8 @@ export default async function DashboardPage() {
       <div className="max-w-2xl mx-auto py-20 text-center space-y-4">
         <h1 className="text-2xl font-bold text-[#0f172a]">Добро пожаловать в ДолгOFF</h1>
         <p className="text-[#64748b]">Добавьте первый долг, чтобы увидеть полную картину и план погашения.</p>
-        <Button asChild className="bg-[#1e40af] hover:bg-[#1d3a9e] text-white">
-          <Link href="/debts/new">Добавить первый долг</Link>
+        <Button render={<Link href="/debts/new" />} className="bg-[#1e40af] hover:bg-[#1d3a9e] text-white">
+          Добавить первый долг
         </Button>
       </div>
     );

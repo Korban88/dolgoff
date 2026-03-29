@@ -123,7 +123,7 @@ export function DebtForm({ initial, mode }: DebtFormProps) {
 
       <div className="space-y-2">
         <Label htmlFor="debtType">Тип долга</Label>
-        <Select value={debtType} onValueChange={setDebtType} required>
+        <Select value={debtType} onValueChange={(v) => setDebtType(v ?? "")} required>
           <SelectTrigger className="border-[#e2e8f0]">
             <SelectValue placeholder="Выберите тип" />
           </SelectTrigger>

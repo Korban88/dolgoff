@@ -15,7 +15,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
 
@@ -170,12 +169,10 @@ export default function SettingsPage() {
             После удаления аккаунта все ваши данные — долги, планы, история — будут безвозвратно уничтожены.
             Это действие нельзя отменить.
           </p>
+          <Button variant="outline" className="border-[#fca5a5] text-red-600 hover:bg-red-50" onClick={() => setDeleteOpen(true)}>
+            Удалить аккаунт
+          </Button>
           <Dialog open={deleteOpen} onOpenChange={setDeleteOpen}>
-            <DialogTrigger asChild>
-              <Button variant="outline" className="border-[#fca5a5] text-red-600 hover:bg-red-50">
-                Удалить аккаунт
-              </Button>
-            </DialogTrigger>
             <DialogContent>
               <DialogHeader>
                 <DialogTitle>Вы уверены?</DialogTitle>

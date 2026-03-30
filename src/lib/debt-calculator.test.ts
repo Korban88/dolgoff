@@ -1,5 +1,13 @@
 import { describe, it, expect } from "vitest";
-import { calculatePayoff, compareStrategies, type DebtInput } from "./debt-calculator";
+import {
+  calculatePayoff,
+  compareStrategies,
+  getMonthlyInterestCost,
+  getDebtPayoffDates,
+  getSmartPresets,
+  calculateInactionCost,
+  type DebtInput,
+} from "./debt-calculator";
 
 const makeDebt = (overrides: Partial<DebtInput> & Pick<DebtInput, "id" | "currentBalance" | "interestRate" | "minimumPayment">): DebtInput => ({
   creditorName: "Тест",
@@ -90,5 +98,56 @@ describe("compareStrategies", () => {
     const debt = makeDebt({ id: "d1", currentBalance: 100000, interestRate: 18, minimumPayment: 3000 });
     const result = compareStrategies([debt], 3000);
     expect(result.minimum.totalMonths).toBeGreaterThan(result.avalanche.totalMonths);
+  });
+});
+
+describe("getMonthlyInterestCost", () => {
+  it("суммирует месячные проценты по всем долгам", () => {
+    const debts = [
+      makeDebt({ id: "d1", currentBalance: 100000, interestRate: 12, minimumPayment: 3000 }),
+      makeDebt({ id: "d2", currentBalance: 50000, interestRate: 24, minimumPayment: 2000 }),
+    ];
+    const cost = getMonthlyInterestCost(debts);
+    // 100000 * 12/100/12 + 50000 * 24/100/12 = 1000 + 1000 = 2000
+    expect(cost).toBeCloseTo(2000, 0);
+  });
+
+  it("возвращает 0 для пустого массива", () => {
+    expect(getMonthlyInterestCost([])).toBe(0);
+  });
+});
+
+describe("getDebtPayoffDates", () => {
+  it("возвращает дату для каждого закрытого долга", () => {
+    const debt = makeDebt({ id: "d1", currentBalance: 60000, interestRate: 18, minimumPayment: 5000 });
+    const result = calculatePayoff([debt], "avalanche", 0);
+    const dates = getDebtPayoffDates(result);
+    expect(dates["d1"]).toBeInstanceOf(Date);
+    expect(dates["d1"].getTime()).toBeGreaterThan(new Date().getTime());
+  });
+});
+
+describe("getSmartPresets", () => {
+  it("возвращает малые пресеты при платеже < 20000", () => {
+    expect(getSmartPresets(15000)).toEqual([2000, 5000, 10000]);
+  });
+
+  it("возвращает средние пресеты при платеже 20000–50000", () => {
+    expect(getSmartPresets(30000)).toEqual([5000, 10000, 20000]);
+  });
+
+  it("возвращает большие пресеты при платеже > 50000", () => {
+    expect(getSmartPresets(60000)).toEqual([10000, 25000, 50000]);
+  });
+});
+
+describe("calculateInactionCost", () => {
+  it("возвращает корректную структуру", () => {
+    const debt = makeDebt({ id: "d1", currentBalance: 100000, interestRate: 18, minimumPayment: 5000 });
+    const result = calculatePayoff([debt], "avalanche", 0);
+    const cost = calculateInactionCost([debt], result);
+    expect(cost.monthlyInterestCost).toBeGreaterThan(0);
+    expect(cost.totalOverpayment).toBe(result.totalInterestPaid);
+    expect(cost.monthsInterestOnly).toBe(result.totalMonths);
   });
 });

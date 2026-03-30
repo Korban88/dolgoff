@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, useCallback, useEffect } from "react";
+import Link from "next/link";
 import {
   LineChart,
   Line,
@@ -20,12 +21,13 @@ import {
   type DebtInput,
   type Strategy,
 } from "@/lib/debt-calculator";
-import { Clock, PiggyBank, TrendingDown, Share2, CheckCircle2, Zap } from "lucide-react";
+import { Clock, PiggyBank, TrendingDown, Share2, CheckCircle2, Zap, ArrowLeft } from "lucide-react";
 import { ShareModal } from "@/components/share-modal";
 import { useAnimatedNumber } from "@/hooks/use-animated-number";
 
 interface Props {
   debts: DebtInput[];
+  initialExtra?: number;
 }
 
 const STRATEGIES: { value: Strategy; label: string; desc: string }[] = [
@@ -34,9 +36,9 @@ const STRATEGIES: { value: Strategy; label: string; desc: string }[] = [
   { value: "proportional", label: "Пропорционально", desc: "По доле" },
 ];
 
-export function SimulatorClient({ debts }: Props) {
+export function SimulatorClient({ debts, initialExtra = 0 }: Props) {
   // Slider value (immediate — for display)
-  const [extra, setExtra] = useState(0);
+  const [extra, setExtra] = useState(initialExtra);
   // Debounced value (used for calculations — avoids recalc on every px)
   const [calcExtra, setCalcExtra] = useState(0);
   const [strategy, setStrategy] = useState<Strategy>("avalanche");
@@ -87,14 +89,21 @@ export function SimulatorClient({ debts }: Props) {
       <div className="max-w-4xl mx-auto space-y-7 pb-28 md:pb-8">
         {/* Header */}
         <div>
+          <Link
+            href="/dashboard"
+            className="inline-flex items-center gap-1.5 text-sm text-[#64748b] hover:text-[#1e40af] mb-3 transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            К дашборду
+          </Link>
           <h1 className="text-2xl font-bold text-[#0f172a] tracking-tight">Симулятор «Что если»</h1>
-          <p className="text-sm text-[#64748b] mt-0.5">Узнайте, как доплата меняет всю картину</p>
+          <p className="text-sm text-[#64748b] mt-0.5">Доплата сверх минимума — и картина меняется</p>
         </div>
 
         {/* ── A. SLIDER HERO ── */}
         <Card className="border-0 shadow-sm rounded-2xl bg-white overflow-hidden">
           <CardContent className="p-6 sm:p-8">
-            <p className="text-sm font-semibold text-[#0f172a] mb-1">Доплата к текущим платежам</p>
+            <p className="text-sm font-semibold text-[#0f172a] mb-1">Доплата сверх минимума</p>
             <p className="text-xs text-[#94a3b8] mb-6">
               Сколько вы готовы платить сверх минимума каждый месяц
             </p>

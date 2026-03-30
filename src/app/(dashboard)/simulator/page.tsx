@@ -5,9 +5,16 @@ import { SimulatorClient } from "./simulator-client";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
-export default async function SimulatorPage() {
+export default async function SimulatorPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ extra?: string }>;
+}) {
   const session = await auth();
   if (!session?.user?.id) redirect("/login");
+
+  const params = await searchParams;
+  const initialExtra = params.extra ? Math.max(0, parseInt(params.extra, 10) || 0) : 0;
 
   const dbDebts = await prisma.debt.findMany({
     where: { userId: session.user.id, isClosed: false },
@@ -45,5 +52,5 @@ export default async function SimulatorPage() {
     );
   }
 
-  return <SimulatorClient debts={debts} />;
+  return <SimulatorClient debts={debts} initialExtra={initialExtra} />;
 }

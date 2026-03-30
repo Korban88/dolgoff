@@ -64,7 +64,7 @@ export default async function DebtsPage() {
           render={<Link href="/debts/new" />}
           className="bg-[#1e40af] hover:bg-[#1d3a9e] text-white rounded-xl shadow-sm shadow-blue-200 transition-all duration-200"
         >
-          <Plus className="w-4 h-4 mr-1.5" />Добавить долг
+          <Plus className="w-4 h-4 mr-1.5" />+ Новый долг
         </Button>
       </div>
 

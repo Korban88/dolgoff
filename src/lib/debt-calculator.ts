@@ -245,3 +245,34 @@ export function formatMonths(months: number): string {
   }
   return parts.join(" ");
 }
+
+export function getMonthlyInterestCost(debts: DebtInput[]): number {
+  return debts.reduce((sum, d) => sum + d.currentBalance * (d.interestRate / 100 / 12), 0);
+}
+
+export function getDebtPayoffDates(result: PayoffResult): Record<string, Date> {
+  const now = new Date();
+  const dates: Record<string, Date> = {};
+  for (const closure of result.debtClosures) {
+    const date = new Date(now.getFullYear(), now.getMonth() + closure.closedAtMonth, 1);
+    dates[closure.id] = date;
+  }
+  return dates;
+}
+
+export function getSmartPresets(totalMinPayment: number): number[] {
+  if (totalMinPayment < 20000) return [2000, 5000, 10000];
+  if (totalMinPayment <= 50000) return [5000, 10000, 20000];
+  return [10000, 25000, 50000];
+}
+
+export function calculateInactionCost(
+  debts: DebtInput[],
+  result: PayoffResult
+): { monthlyInterestCost: number; totalOverpayment: number; monthsInterestOnly: number } {
+  return {
+    monthlyInterestCost: getMonthlyInterestCost(debts),
+    totalOverpayment: result.totalInterestPaid,
+    monthsInterestOnly: result.totalMonths,
+  };
+}

@@ -10,13 +10,21 @@ interface PayoffSummaryProps {
 
 export function PayoffSummary({ debts, totalMinPayment }: PayoffSummaryProps) {
   const totalBalance = debts.reduce((sum, d) => sum + d.currentBalance, 0);
-  const avgRate =
-    debts.length > 0
-      ? debts.reduce((sum, d) => sum + d.interestRate, 0) / debts.length
+
+  // Weighted average rate (by balance)
+  const weightedRate =
+    totalBalance > 0
+      ? debts.reduce((sum, d) => sum + d.interestRate * d.currentBalance, 0) / totalBalance
       : 0;
 
+  // Nearest closure date
+  const nearestDebt = debts.reduce(
+    (min, d) => (d.minimumPayment > (min?.minimumPayment ?? 0) ? d : min),
+    debts[0]
+  );
+
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+    <div className="grid grid-cols-2 gap-3">
       <MetricCard
         value={totalBalance}
         label="Общий долг"
@@ -30,12 +38,20 @@ export function PayoffSummary({ debts, totalMinPayment }: PayoffSummaryProps) {
         variant="default"
       />
       <MetricCard
-        value={avgRate}
-        label="Средняя ставка"
+        value={weightedRate}
+        label="Взвеш. ставка"
         format="percent"
         variant="default"
         animate={false}
-        className="col-span-2 md:col-span-1"
+        sublabel="средняя по балансу"
+      />
+      <MetricCard
+        value={debts.length}
+        label="Кредитов"
+        format="number"
+        variant="default"
+        animate={false}
+        sublabel={nearestDebt ? `макс. платёж: ${nearestDebt.creditorName}` : undefined}
       />
     </div>
   );

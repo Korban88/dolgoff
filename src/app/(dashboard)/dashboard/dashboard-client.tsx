@@ -30,14 +30,10 @@ interface Props {
 export function DashboardClient({ debts }: Props) {
   const [shareOpen, setShareOpen] = useState(false);
 
-  // Base plan: avalanche, no extra
   const result = useMemo(() => calculatePayoff(debts, "avalanche", 0), [debts]);
-
-  // Smart presets based on total min payment
   const totalMinPayment = useMemo(() => debts.reduce((s, d) => s + d.minimumPayment, 0), [debts]);
   const presets = useMemo(() => getSmartPresets(totalMinPayment), [totalMinPayment]);
 
-  // Calculate scenario results for each preset
   const scenarioResults = useMemo(() => {
     const map: Record<number, ReturnType<typeof calculatePayoff>> = {};
     for (const amount of presets) {
@@ -46,44 +42,48 @@ export function DashboardClient({ debts }: Props) {
     return map;
   }, [debts, presets]);
 
-  // Best preset result for chart comparison
   const bestPreset = presets[1] ?? presets[0];
   const bestResult = scenarioResults[bestPreset];
 
-  // Payoff dates per debt
   const payoffDates = useMemo(() => getDebtPayoffDates(result), [result]);
 
-  // Payoff date for the whole plan
   const payoffDate = useMemo(() => {
     const now = new Date();
     return new Date(now.getFullYear(), now.getMonth() + result.totalMonths, 1);
   }, [result]);
 
-  // Inaction cost
   const inactionCost = useMemo(() => calculateInactionCost(debts, result), [debts, result]);
 
   if (debts.length === 0) {
     return (
-      <div className="max-w-4xl mx-auto">
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className="text-2xl font-bold text-[#0f172a] tracking-tight">Дашборд</h1>
-            <p className="text-sm text-[#64748b] mt-0.5">Полная картина ваших долгов</p>
-          </div>
+      <div className="max-w-lg mx-auto py-16 text-center space-y-6">
+        <div className="w-20 h-20 mx-auto rounded-3xl bg-[#EEF2FF] flex items-center justify-center">
+          <svg viewBox="0 0 100 100" className="w-10 h-10" fill="none">
+            <circle cx="50" cy="50" r="42" stroke="url(#empty-ring)" strokeWidth="16" strokeLinecap="round" />
+            <defs>
+              <linearGradient id="empty-ring" x1="15" y1="15" x2="85" y2="85" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stopColor="#2DDACC" />
+                <stop offset="50%" stopColor="#6C63FF" />
+                <stop offset="100%" stopColor="#8B5CF6" />
+              </linearGradient>
+            </defs>
+          </svg>
         </div>
-        <div className="rounded-2xl border border-dashed border-[#e2e8f0] p-12 text-center">
-          <p className="text-lg font-semibold text-[#0f172a] mb-2">Добавьте первый долг</p>
-          <p className="text-sm text-[#64748b] mb-6">
-            Введите данные кредита — и увидите полную картину
+        <div>
+          <h1 className="text-2xl font-bold text-[#0F172A] tracking-tight mb-2">
+            Добавьте первый долг
+          </h1>
+          <p className="text-[#667085]">
+            Введите данные кредита — и увидите полную картину: когда закроете, сколько переплатите
           </p>
-          <Button
-            render={<Link href="/debts/new" />}
-            className="bg-[#1e40af] hover:bg-[#1d3a9e] text-white rounded-xl"
-          >
-            <Plus className="w-4 h-4 mr-1.5" />
-            + Новый долг
-          </Button>
         </div>
+        <Button
+          render={<Link href="/debts/new" />}
+          className="bg-[#6C63FF] hover:bg-[#5B54E8] text-white rounded-xl px-8 h-11 font-semibold shadow-md shadow-[#6C63FF]/25 transition-all duration-200 hover:scale-[1.02]"
+        >
+          <Plus className="w-4 h-4 mr-1.5" />
+          + Новый долг
+        </Button>
       </div>
     );
   }
@@ -93,21 +93,21 @@ export function DashboardClient({ debts }: Props) {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-[#0f172a] tracking-tight">Дашборд</h1>
-          <p className="text-sm text-[#64748b] mt-0.5">Полная картина ваших долгов</p>
+          <h1 className="text-xl font-bold text-[#0F172A] tracking-tight">Обзор</h1>
+          <p className="text-sm text-[#667085] mt-0.5">Ваш план выхода из долгов</p>
         </div>
         <Button
           render={<Link href="/debts/new" />}
-          className="bg-[#1e40af] hover:bg-[#1d3a9e] text-white rounded-xl shadow-sm shadow-blue-200 transition-all duration-200"
+          className="bg-[#6C63FF] hover:bg-[#5B54E8] text-white rounded-xl shadow-sm shadow-[#6C63FF]/20 transition-all duration-200 hover:scale-[1.02] text-sm font-semibold h-9 px-4"
         >
-          <Plus className="w-4 h-4 mr-1.5" />+ Новый долг
+          <Plus className="w-4 h-4 mr-1" />+ Новый долг
         </Button>
       </div>
 
       {/* 2-column layout */}
-      <div className="grid grid-cols-1 md:grid-cols-[1fr_380px] gap-6 items-start">
-        {/* Left column */}
-        <div className="space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-[1fr_360px] gap-5 items-start">
+        {/* Left */}
+        <div className="space-y-5">
           <DashboardHero result={result} payoffDate={payoffDate} />
           <ScenarioCards
             presets={presets}
@@ -117,7 +117,7 @@ export function DashboardClient({ debts }: Props) {
           <DebtProgressList debts={debts} payoffDates={payoffDates} />
         </div>
 
-        {/* Right column — sticky */}
+        {/* Right — sticky */}
         <div className="space-y-4 md:sticky md:top-6 self-start">
           <CostOfInaction
             monthlyInterestCost={inactionCost.monthlyInterestCost}
@@ -134,14 +134,11 @@ export function DashboardClient({ debts }: Props) {
       </div>
 
       {/* Action bar */}
-      <div className="border-t border-[#e8edf4] pt-6 pb-2 mt-8">
-        <p className="text-xs font-semibold text-[#94a3b8] uppercase tracking-widest mb-3">
-          Что дальше
-        </p>
-        <div className="flex flex-wrap gap-3">
+      <div className="border-t border-[#E7ECF3] pt-5 pb-2 mt-8">
+        <div className="flex flex-wrap gap-2.5">
           <Button
             render={<Link href="/simulator" />}
-            className="bg-[#1e40af] hover:bg-[#1d3a9e] text-white rounded-xl shadow-sm shadow-blue-100 transition-all duration-200"
+            className="bg-[#6C63FF] hover:bg-[#5B54E8] text-white rounded-xl shadow-sm shadow-[#6C63FF]/20 h-9 px-4 text-sm font-semibold transition-all duration-200"
           >
             <Sliders className="w-4 h-4 mr-1.5" />
             Симулятор
@@ -149,14 +146,14 @@ export function DashboardClient({ debts }: Props) {
           <Button
             render={<Link href="/debts/new" />}
             variant="outline"
-            className="border-[#e2e8f0] text-[#64748b] rounded-xl hover:bg-[#f8fafc] hover:text-[#0f172a] transition-colors"
+            className="border-[#E7ECF3] text-[#667085] rounded-xl hover:bg-[#F7F8FC] hover:text-[#0F172A] h-9 px-4 text-sm transition-colors"
           >
             <Plus className="w-4 h-4 mr-1.5" />
             + Новый долг
           </Button>
           <Button
             variant="outline"
-            className="rounded-xl border border-[#e2e8f0] text-[#64748b] hover:bg-[#f8fafc] hover:text-[#0f172a] transition-colors"
+            className="border-[#E7ECF3] text-[#667085] rounded-xl hover:bg-[#F7F8FC] hover:text-[#0F172A] h-9 px-4 text-sm transition-colors"
             onClick={() => setShareOpen(true)}
           >
             <Share2 className="w-4 h-4 mr-1.5" />

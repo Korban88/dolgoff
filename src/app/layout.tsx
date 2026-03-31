@@ -11,6 +11,9 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "ДолгOFF — калькулятор долгов",
   description: "Рассчитайте стратегию погашения долгов и узнайте дату финансовой свободы",
+  icons: {
+    icon: "/favicon.ico",
+  },
 };
 
 export default function RootLayout({

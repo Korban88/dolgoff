@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { formatCurrency, formatMonths } from "@/lib/debt-calculator";
 import type { PayoffResult } from "@/lib/debt-calculator";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, TrendingDown } from "lucide-react";
 
 interface ScenarioCardsProps {
   presets: number[];
@@ -14,50 +14,58 @@ interface ScenarioCardsProps {
 export function ScenarioCards({ presets, baseResult, scenarioResults }: ScenarioCardsProps) {
   return (
     <div id="scenario-cards" className="space-y-3">
-      <p className="text-sm font-semibold text-[#0f172a]">Что изменится с доплатой</p>
-      <div className="grid grid-cols-2 gap-3">
-        {presets.map((amount) => {
+      <div className="flex items-center justify-between">
+        <p className="text-sm font-semibold text-[#0F172A]">Сценарии доплат</p>
+        <Link
+          href="/simulator"
+          className="text-xs font-medium text-[#6C63FF] hover:underline flex items-center gap-1"
+        >
+          Настроить свой <ArrowRight className="w-3 h-3" />
+        </Link>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        {presets.map((amount, idx) => {
           const result = scenarioResults[amount];
           if (!result) return null;
           const savedMonths = baseResult.totalMonths - result.totalMonths;
           const savedMoney = baseResult.totalInterestPaid - result.totalInterestPaid;
+          const isHighlight = idx === 1;
+
           return (
             <Link
               key={amount}
               href={`/simulator?extra=${amount}`}
-              className="group rounded-2xl bg-white border border-[#e2e8f0] p-4 hover:border-blue-200 hover:shadow-sm transition-all duration-200 hover:scale-[1.02] block"
+              className={`group relative rounded-2xl p-4 transition-all duration-200 hover:scale-[1.02] hover:shadow-md block ${
+                isHighlight
+                  ? "bg-[#6C63FF] text-white shadow-lg shadow-[#6C63FF]/25"
+                  : "bg-white border border-[#E7ECF3] hover:border-[#6C63FF]/30 shadow-[0_1px_4px_rgba(15,23,42,0.04)]"
+              }`}
             >
-              <p className="text-xs font-semibold text-[#1e40af] mb-2">
+              {isHighlight && (
+                <span className="absolute -top-2.5 left-4 text-[10px] font-bold bg-[#12B76A] text-white px-2 py-0.5 rounded-full uppercase tracking-wide">
+                  Лучший старт
+                </span>
+              )}
+              <p className={`text-xs font-semibold mb-2.5 ${isHighlight ? "text-white/70" : "text-[#6C63FF]"}`}>
                 +{formatCurrency(amount)}/мес
               </p>
               {savedMonths > 0 && (
-                <p className="text-sm font-bold text-[#059669]">
-                  −{formatMonths(savedMonths)}
-                </p>
+                <div className="flex items-center gap-1.5 mb-1">
+                  <TrendingDown className={`w-3.5 h-3.5 ${isHighlight ? "text-white/80" : "text-[#12B76A]"}`} />
+                  <p className={`text-base font-bold leading-none ${isHighlight ? "text-white" : "text-[#0F172A]"}`}>
+                    −{formatMonths(savedMonths)}
+                  </p>
+                </div>
               )}
               {savedMoney > 0 && (
-                <p className="text-xs text-[#059669]">
+                <p className={`text-xs font-medium ${isHighlight ? "text-white/75" : "text-[#12B76A]"}`}>
                   экономия {formatCurrency(savedMoney)}
                 </p>
               )}
-              <p className="text-xs text-[#94a3b8] mt-1 group-hover:text-[#64748b] transition-colors">
-                подробнее →
-              </p>
             </Link>
           );
         })}
-
-        {/* Custom scenario card */}
-        <Link
-          href="/simulator"
-          className="group rounded-2xl bg-blue-50 border border-blue-100 p-4 hover:bg-blue-100 hover:border-blue-200 transition-all duration-200 hover:scale-[1.02] flex flex-col justify-between"
-        >
-          <p className="text-xs font-semibold text-[#1e40af] mb-2">Свой вариант</p>
-          <div className="flex items-center gap-1 text-[#1e40af]">
-            <span className="text-sm font-bold">Открыть симулятор</span>
-            <ArrowRight className="w-4 h-4" />
-          </div>
-        </Link>
       </div>
     </div>
   );

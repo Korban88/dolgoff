@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import { motion } from "framer-motion";
 import { formatCurrency, formatMonths } from "@/lib/debt-calculator";
 import type { PayoffResult } from "@/lib/debt-calculator";
-import { ArrowRight, TrendingDown } from "lucide-react";
+import { ArrowRight, TrendingDown, Clock } from "lucide-react";
 
 interface ScenarioCardsProps {
   presets: number[];
@@ -18,9 +19,9 @@ export function ScenarioCards({ presets, baseResult, scenarioResults }: Scenario
         <p className="text-sm font-semibold text-[#0F172A]">Сценарии доплат</p>
         <Link
           href="/simulator"
-          className="text-xs font-medium text-[#6C63FF] hover:underline flex items-center gap-1"
+          className="text-xs font-medium text-[#6C63FF] hover:underline underline-offset-2 flex items-center gap-1 transition-colors"
         >
-          Настроить свой <ArrowRight className="w-3 h-3" />
+          Свой вариант <ArrowRight className="w-3 h-3" />
         </Link>
       </div>
 
@@ -33,37 +34,76 @@ export function ScenarioCards({ presets, baseResult, scenarioResults }: Scenario
           const isHighlight = idx === 1;
 
           return (
-            <Link
+            <motion.div
               key={amount}
-              href={`/simulator?extra=${amount}`}
-              className={`group relative rounded-2xl p-4 transition-all duration-200 hover:scale-[1.02] hover:shadow-md block ${
-                isHighlight
-                  ? "bg-[#6C63FF] text-white shadow-lg shadow-[#6C63FF]/25"
-                  : "bg-white border border-[#E7ECF3] hover:border-[#6C63FF]/30 shadow-[0_1px_4px_rgba(15,23,42,0.04)]"
-              }`}
+              whileHover={{ scale: 1.025, y: -2 }}
+              transition={{ type: "spring", stiffness: 400, damping: 25 }}
             >
-              {isHighlight && (
-                <span className="absolute -top-2.5 left-4 text-[10px] font-bold bg-[#12B76A] text-white px-2 py-0.5 rounded-full uppercase tracking-wide">
-                  Лучший старт
-                </span>
-              )}
-              <p className={`text-xs font-semibold mb-2.5 ${isHighlight ? "text-white/70" : "text-[#6C63FF]"}`}>
-                +{formatCurrency(amount)}/мес
-              </p>
-              {savedMonths > 0 && (
-                <div className="flex items-center gap-1.5 mb-1">
-                  <TrendingDown className={`w-3.5 h-3.5 ${isHighlight ? "text-white/80" : "text-[#12B76A]"}`} />
-                  <p className={`text-base font-bold leading-none ${isHighlight ? "text-white" : "text-[#0F172A]"}`}>
-                    −{formatMonths(savedMonths)}
-                  </p>
-                </div>
-              )}
-              {savedMoney > 0 && (
-                <p className={`text-xs font-medium ${isHighlight ? "text-white/75" : "text-[#12B76A]"}`}>
-                  экономия {formatCurrency(savedMoney)}
+              <Link
+                href={`/simulator?extra=${amount}`}
+                className={`relative block rounded-2xl p-4 transition-shadow duration-200 ${
+                  isHighlight
+                    ? "text-white"
+                    : "bg-white border border-[#E7ECF3] shadow-card hover:shadow-card-hover"
+                }`}
+                style={
+                  isHighlight
+                    ? {
+                        background: "linear-gradient(135deg, #6C63FF, #5B8DEF)",
+                        boxShadow: "0 6px 24px rgba(108,99,255,0.30), 0 2px 6px rgba(108,99,255,0.18)",
+                      }
+                    : undefined
+                }
+              >
+                {isHighlight && (
+                  <span className="absolute -top-2.5 left-4 text-[9px] font-bold bg-[#12B76A] text-white px-2 py-0.5 rounded-full uppercase tracking-wider shadow-sm">
+                    Лучший старт
+                  </span>
+                )}
+
+                <p
+                  className={`text-xs font-semibold mb-3 ${
+                    isHighlight ? "text-white/70" : "text-[#6C63FF]"
+                  }`}
+                >
+                  +{formatCurrency(amount)}/мес
                 </p>
-              )}
-            </Link>
+
+                {savedMonths > 0 && (
+                  <div className="flex items-center gap-1.5 mb-1.5">
+                    <Clock
+                      className={`w-3.5 h-3.5 shrink-0 ${
+                        isHighlight ? "text-white/70" : "text-[#12B76A]"
+                      }`}
+                    />
+                    <p
+                      className={`font-numeric text-xl font-bold leading-none ${
+                        isHighlight ? "text-white" : "text-[#0F172A]"
+                      }`}
+                    >
+                      −{formatMonths(savedMonths)}
+                    </p>
+                  </div>
+                )}
+
+                {savedMoney > 0 && (
+                  <div className="flex items-center gap-1.5">
+                    <TrendingDown
+                      className={`w-3 h-3 shrink-0 ${
+                        isHighlight ? "text-white/60" : "text-[#12B76A]"
+                      }`}
+                    />
+                    <p
+                      className={`font-numeric text-xs font-semibold ${
+                        isHighlight ? "text-white/80" : "text-[#12B76A]"
+                      }`}
+                    >
+                      экономия {formatCurrency(savedMoney)}
+                    </p>
+                  </div>
+                )}
+              </Link>
+            </motion.div>
           );
         })}
       </div>

@@ -4,13 +4,14 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
-import { LayoutDashboard, CreditCard, Sliders, Settings, LogOut } from "lucide-react";
+import { LayoutDashboard, CreditCard, Sliders, Settings, LogOut, BookOpen } from "lucide-react";
 
 const navItems = [
-  { href: "/dashboard", label: "Дашборд", icon: LayoutDashboard },
-  { href: "/debts", label: "Мои долги", icon: CreditCard },
-  { href: "/simulator", label: "Симулятор", icon: Sliders },
-  { href: "/settings", label: "Настройки", icon: Settings },
+  { href: "/dashboard",  label: "Дашборд",   icon: LayoutDashboard },
+  { href: "/debts",      label: "Мои долги",  icon: CreditCard },
+  { href: "/simulator",  label: "Симулятор",  icon: Sliders },
+  { href: "/learn",      label: "Разобраться", icon: BookOpen },
+  { href: "/settings",   label: "Настройки",  icon: Settings },
 ];
 
 export function Sidebar() {

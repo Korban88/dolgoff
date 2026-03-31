@@ -20,8 +20,9 @@ import {
   type DebtInput,
   type Strategy,
 } from "@/lib/debt-calculator";
-import { Clock, PiggyBank, TrendingDown, Share2, CheckCircle2, ArrowLeft, Zap } from "lucide-react";
+import { Clock, PiggyBank, TrendingDown, Share2, CheckCircle2, ArrowLeft, Zap, CalendarCheck } from "lucide-react";
 import { ShareModal } from "@/components/share-modal";
+import { LifeEquivalents } from "@/components/life-equivalents";
 import { useAnimatedNumber } from "@/hooks/use-animated-number";
 
 interface Props {
@@ -77,6 +78,12 @@ export function SimulatorClient({ debts, initialExtra = 0 }: Props) {
   }, [baseline, improved, calcExtra]);
 
   const sliderPercent = (extra / 50000) * 100;
+
+  // Payoff date for improved scenario
+  const improvedPayoffDate = useMemo(() => {
+    const now = new Date();
+    return new Date(now.getFullYear(), now.getMonth() + improved.totalMonths, 1);
+  }, [improved.totalMonths]);
 
   return (
     <>
@@ -221,6 +228,33 @@ export function SimulatorClient({ debts, initialExtra = 0 }: Props) {
             <p className="text-[10px] text-[#94a3b8] mt-1.5">по процентам</p>
           </div>
         </div>
+
+        {/* New payoff date */}
+        {hasSavings && (
+          <div className="bg-[#F0FDF8] border border-[#BBF7D0] rounded-2xl px-5 py-4 flex items-center gap-4">
+            <div className="w-10 h-10 rounded-xl bg-[#12B76A]/10 flex items-center justify-center shrink-0">
+              <CalendarCheck className="w-5 h-5 text-[#12B76A]" />
+            </div>
+            <div>
+              <p className="text-xs font-medium text-[#065f46]/70">Новая дата закрытия всех долгов</p>
+              <p className="font-numeric text-xl font-bold text-[#059669] leading-tight">
+                {improvedPayoffDate.toLocaleDateString("ru-RU", { month: "long", year: "numeric" })}
+              </p>
+              <p className="text-xs text-[#12B76A] font-medium mt-0.5">
+                на {formatMonths(animatedSavedMonths)} раньше
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Life equivalents for saved money */}
+        {hasSavings && savedMoney > 500 && (
+          <LifeEquivalents
+            amount={savedMoney}
+            label="экономия — это"
+            title="Что значит эта экономия"
+          />
+        )}
 
         {/* Strategy tabs */}
         <div className="space-y-2">

@@ -12,6 +12,8 @@ import {
 } from "@/lib/debt-calculator";
 import { Plus, Sliders, Share2 } from "lucide-react";
 import { ShareModal } from "@/components/share-modal";
+import { LifeEquivalents } from "@/components/life-equivalents";
+import { FreedomCalculator } from "@/components/freedom-calculator";
 import { DashboardHero } from "@/components/dashboard/dashboard-hero";
 import { CostOfInaction } from "@/components/dashboard/cost-of-inaction";
 import { ScenarioCards } from "@/components/dashboard/scenario-cards";
@@ -129,6 +131,17 @@ export function DashboardClient({ debts }: Props) {
             baseResult={result}
             bestResult={bestResult}
             bestExtra={bestPreset}
+          />
+          {result.totalInterestPaid > 1000 && (
+            <LifeEquivalents
+              amount={result.totalInterestPaid}
+              label="переплата — это"
+              title="Переплата в реальных деньгах"
+            />
+          )}
+          <FreedomCalculator
+            freedMonthlyPayment={totalMinPayment}
+            totalMonths={result.totalMonths}
           />
         </div>
       </div>

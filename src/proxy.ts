@@ -5,7 +5,8 @@ export default auth((req) => {
   const isLoggedIn = !!req.auth;
   const { pathname } = req.nextUrl;
 
-  if (pathname.startsWith("/dashboard") && !isLoggedIn) {
+  const protected_ = ["/dashboard", "/debts", "/simulator", "/settings", "/learn"];
+  if (protected_.some((p) => pathname.startsWith(p)) && !isLoggedIn) {
     const loginUrl = new URL("/login", req.url);
     loginUrl.searchParams.set("callbackUrl", pathname);
     return NextResponse.redirect(loginUrl);
@@ -15,5 +16,5 @@ export default auth((req) => {
 });
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/debts/:path*", "/simulator/:path*", "/settings/:path*"],
+  matcher: ["/dashboard/:path*", "/debts/:path*", "/simulator/:path*", "/settings/:path*", "/learn/:path*"],
 };

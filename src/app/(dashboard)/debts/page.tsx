@@ -3,34 +3,38 @@ import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Plus, Pencil, CheckCircle2 } from "lucide-react";
 import { formatCurrency } from "@/lib/debt-calculator";
 
-const DEBT_TYPE_COLORS: Record<string, string> = {
-  "Ипотека": "bg-blue-100 text-blue-700",
-  "Автокредит": "bg-violet-100 text-violet-700",
-  "Кредит наличными": "bg-sky-100 text-sky-700",
-  "Кредитная карта": "bg-indigo-100 text-indigo-700",
-  "Рассрочка": "bg-teal-100 text-teal-700",
-  "МФО": "bg-orange-100 text-orange-700",
-  "Другое": "bg-slate-100 text-slate-600",
-};
-
-// Left border color classes — listed explicitly for Tailwind JIT
-const RATE_BORDER_CLASSES: Record<string, string> = {
+// Left-border classes — explicit for Tailwind JIT
+const RATE_BORDER: Record<string, string> = {
   critical: "border-l-orange-400",
   high:     "border-l-amber-400",
-  medium:   "border-l-blue-400",
+  medium:   "border-l-[#6C63FF]",
   low:      "border-l-emerald-400",
 };
 
-function getRateBorderClass(rate: number): string {
-  if (rate > 30) return RATE_BORDER_CLASSES.critical;
-  if (rate > 20) return RATE_BORDER_CLASSES.high;
-  if (rate > 10) return RATE_BORDER_CLASSES.medium;
-  return RATE_BORDER_CLASSES.low;
+function getBorder(rate: number) {
+  if (rate > 30) return RATE_BORDER.critical;
+  if (rate > 20) return RATE_BORDER.high;
+  if (rate > 10) return RATE_BORDER.medium;
+  return RATE_BORDER.low;
+}
+
+// Smart neutral tag logic — no advisory language
+function getSmartTag(
+  debt: { id: string; interestRate: number; currentBalance: number; minimumPayment: number },
+  allDebts: typeof debt[]
+): { label: string; color: string } | null {
+  const maxRate = Math.max(...allDebts.map((d) => d.interestRate));
+  const minBalance = Math.min(...allDebts.map((d) => d.currentBalance));
+  const maxPayment = Math.max(...allDebts.map((d) => d.minimumPayment));
+
+  if (allDebts.length < 2) return null;
+  if (debt.interestRate === maxRate) return { label: "Высокая ставка", color: "bg-orange-50 text-orange-600 border-orange-100" };
+  if (debt.currentBalance === minBalance) return { label: "Наименьший остаток", color: "bg-emerald-50 text-emerald-600 border-emerald-100" };
+  if (debt.minimumPayment === maxPayment) return { label: "Наибольший платёж", color: "bg-blue-50 text-blue-600 border-blue-100" };
+  return null;
 }
 
 export default async function DebtsPage() {
@@ -47,91 +51,88 @@ export default async function DebtsPage() {
 
   const totalBalance = activeDebts.reduce((s, d) => s + d.currentBalance, 0);
   const totalMinPayment = activeDebts.reduce((s, d) => s + d.minimumPayment, 0);
-  const avgRate =
-    activeDebts.length > 0
-      ? activeDebts.reduce((s, d) => s + d.interestRate, 0) / activeDebts.length
+  // Weighted average rate by balance
+  const weightedRate =
+    totalBalance > 0
+      ? activeDebts.reduce((s, d) => s + d.interestRate * d.currentBalance, 0) / totalBalance
       : 0;
+
+  const activeForTags = activeDebts.map((d) => ({
+    id: d.id,
+    interestRate: d.interestRate,
+    currentBalance: d.currentBalance,
+    minimumPayment: d.minimumPayment,
+  }));
 
   return (
     <div className="max-w-3xl mx-auto space-y-7">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-[#0f172a] tracking-tight">Мои долги</h1>
-          <p className="text-sm text-[#64748b] mt-0.5">Управляйте всеми кредитами в одном месте</p>
+          <h1 className="text-xl font-bold text-[#0F172A] tracking-tight">Мои долги</h1>
+          <p className="text-sm text-[#667085] mt-0.5">Все кредиты в одном месте</p>
         </div>
         <Button
           render={<Link href="/debts/new" />}
-          className="bg-[#1e40af] hover:bg-[#1d3a9e] text-white rounded-xl shadow-sm shadow-blue-200 transition-all duration-200"
+          className="bg-[#6C63FF] hover:bg-[#5B54E8] text-white rounded-xl shadow-sm shadow-[#6C63FF]/20 h-9 px-4 text-sm font-semibold transition-all duration-200 hover:scale-[1.02]"
         >
-          <Plus className="w-4 h-4 mr-1.5" />+ Новый долг
+          <Plus className="w-4 h-4 mr-1" />+ Новый долг
         </Button>
       </div>
 
-      {/* Summary header (only when there are active debts) */}
+      {/* Summary strip */}
       {activeDebts.length > 0 && (
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          <Card className="border-0 shadow-sm rounded-2xl bg-white">
-            <CardContent className="p-4">
-              <p className="text-xs text-[#94a3b8] font-medium">Активных</p>
-              <p className="text-xl font-bold text-[#0f172a] mt-1">{activeDebts.length}</p>
-              <p className="text-xs text-[#94a3b8] mt-0.5">кредитов</p>
-            </CardContent>
-          </Card>
-          <Card className="border-0 shadow-sm rounded-2xl bg-white">
-            <CardContent className="p-4">
-              <p className="text-xs text-[#94a3b8] font-medium">Общий остаток</p>
-              <p className="text-lg font-bold text-[#0f172a] mt-1">{formatCurrency(totalBalance)}</p>
-            </CardContent>
-          </Card>
-          <Card className="border-0 shadow-sm rounded-2xl bg-white">
-            <CardContent className="p-4">
-              <p className="text-xs text-[#94a3b8] font-medium">Средняя ставка</p>
-              <p className="text-xl font-bold text-[#0f172a] mt-1">{avgRate.toFixed(1)}%</p>
-              <p className="text-xs text-[#94a3b8] mt-0.5">годовых</p>
-            </CardContent>
-          </Card>
-          <Card className="border-0 shadow-sm rounded-2xl bg-white">
-            <CardContent className="p-4">
-              <p className="text-xs text-[#94a3b8] font-medium">Мин. платёж</p>
-              <p className="text-lg font-bold text-[#0f172a] mt-1">{formatCurrency(totalMinPayment)}</p>
-              <p className="text-xs text-[#94a3b8] mt-0.5">в месяц</p>
-            </CardContent>
-          </Card>
+          {[
+            { label: "Кредитов", value: String(activeDebts.length), sub: "активных" },
+            { label: "Общий остаток", value: formatCurrency(totalBalance), sub: "" },
+            { label: "Взвеш. ставка", value: `${weightedRate.toFixed(1)}%`, sub: "годовых" },
+            { label: "Платёж / мес", value: formatCurrency(totalMinPayment), sub: "минимум" },
+          ].map(({ label, value, sub }) => (
+            <div
+              key={label}
+              className="bg-white rounded-2xl border border-[#E7ECF3] shadow-card p-4"
+            >
+              <p className="text-[10px] font-semibold text-[#94a3b8] uppercase tracking-wider mb-1">
+                {label}
+              </p>
+              <p className="font-numeric text-lg font-bold text-[#0F172A] leading-tight">{value}</p>
+              {sub && <p className="text-[10px] text-[#94a3b8] mt-0.5">{sub}</p>}
+            </div>
+          ))}
         </div>
       )}
 
       {/* Empty state */}
       {activeDebts.length === 0 && (
-        <Card className="border-0 shadow-sm rounded-2xl bg-white">
-          <CardContent className="py-16 text-center">
-            <div className="w-14 h-14 rounded-2xl bg-[#eff6ff] flex items-center justify-center mx-auto mb-4">
-              <Plus className="w-7 h-7 text-[#1e40af]" />
-            </div>
-            <p className="text-[#0f172a] font-semibold text-base mb-1.5">Долгов пока нет</p>
-            <p className="text-sm text-[#64748b] mb-6 max-w-xs mx-auto">
-              Добавьте первый кредит, чтобы увидеть полную картину и план погашения
-            </p>
-            <Button
-              render={<Link href="/debts/new" />}
-              className="bg-[#1e40af] hover:bg-[#1d3a9e] text-white rounded-xl shadow-sm shadow-blue-200 transition-all duration-200"
-            >
-              Добавить первый долг
-            </Button>
-          </CardContent>
-        </Card>
+        <div className="bg-white rounded-3xl border border-[#E7ECF3] shadow-card py-16 text-center">
+          <div className="w-14 h-14 rounded-2xl bg-[#EEF2FF] flex items-center justify-center mx-auto mb-5">
+            <Plus className="w-7 h-7 text-[#6C63FF]" />
+          </div>
+          <p className="font-semibold text-[#0F172A] mb-2">Долгов пока нет</p>
+          <p className="text-sm text-[#667085] mb-6 max-w-xs mx-auto">
+            Добавьте первый кредит — и увидите полную картину и план погашения
+          </p>
+          <Button
+            render={<Link href="/debts/new" />}
+            className="bg-[#6C63FF] hover:bg-[#5B54E8] text-white rounded-xl shadow-sm shadow-[#6C63FF]/20 px-6 h-10 font-semibold"
+          >
+            Добавить первый долг
+          </Button>
+        </div>
       )}
 
       {/* Active debts */}
       {activeDebts.length > 0 && (
-        <div className="space-y-3">
-          <h2 className="text-xs font-semibold text-[#94a3b8] uppercase tracking-widest px-1">
-            Активные — {activeDebts.length}
-          </h2>
-          {activeDebts.map((debt, idx) => {
-            const borderClass = getRateBorderClass(debt.interestRate);
-            const badgeClass = DEBT_TYPE_COLORS[debt.debtType] ?? "bg-slate-100 text-slate-600";
-            const isHighestRate = idx === 0 && activeDebts.length > 1;
+        <div className="space-y-2.5">
+          <p className="text-[10px] font-bold text-[#94a3b8] uppercase tracking-widest px-1">
+            Активные · {activeDebts.length}
+          </p>
+          {activeDebts.map((debt) => {
+            const tag = getSmartTag(
+              { id: debt.id, interestRate: debt.interestRate, currentBalance: debt.currentBalance, minimumPayment: debt.minimumPayment },
+              activeForTags
+            );
             const progressPercent =
               debt.originalBalance &&
               debt.originalBalance > 0 &&
@@ -140,55 +141,69 @@ export default async function DebtsPage() {
                 : null;
 
             return (
-              <Card
+              <div
                 key={debt.id}
-                className={`border-0 border-l-4 ${borderClass} shadow-sm rounded-2xl bg-white hover:shadow-md transition-shadow duration-200`}
+                className={`bg-white border border-[#E7ECF3] border-l-4 ${getBorder(debt.interestRate)} rounded-2xl shadow-card hover:shadow-card-hover transition-shadow duration-200 px-5 py-4`}
               >
-                <CardContent className="py-4 px-5">
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center flex-wrap gap-2 mb-1.5">
-                        <span className="font-semibold text-[#0f172a] truncate">{debt.creditorName}</span>
-                        <Badge className={`text-xs shrink-0 border-0 ${badgeClass}`}>
-                          {debt.debtType}
-                        </Badge>
-                        {isHighestRate && (
-                          <Badge className="text-xs shrink-0 border-0 bg-orange-100 text-orange-700">
-                            Самая высокая ставка
-                          </Badge>
-                        )}
-                      </div>
-                      <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm">
-                        <span className="font-semibold text-[#0f172a]">
-                          {formatCurrency(debt.currentBalance)}
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex-1 min-w-0">
+                    {/* Name + tags */}
+                    <div className="flex items-center flex-wrap gap-2 mb-2">
+                      <span className="font-semibold text-[#0F172A] text-sm truncate">
+                        {debt.creditorName}
+                      </span>
+                      <span className="text-[10px] font-medium text-[#667085] bg-[#F7F8FC] border border-[#E7ECF3] px-2 py-0.5 rounded-full">
+                        {debt.debtType}
+                      </span>
+                      {tag && (
+                        <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${tag.color}`}>
+                          {tag.label}
                         </span>
-                        <span className="text-[#64748b]">{debt.interestRate}% год.</span>
-                        <span className="text-[#64748b]">мин. {formatCurrency(debt.minimumPayment)}</span>
-                      </div>
-                      {progressPercent !== null && (
-                        <div className="mt-2.5">
-                          <div className="flex justify-between text-xs text-[#94a3b8] mb-1">
-                            <span>Погашено</span>
-                            <span>{progressPercent}%</span>
-                          </div>
-                          <div className="h-1.5 bg-[#f1f5f9] rounded-full overflow-hidden">
-                            <div
-                              className="h-full bg-[#059669] rounded-full"
-                              style={{ width: `${progressPercent}%` }}
-                            />
-                          </div>
-                        </div>
                       )}
                     </div>
-                    <Link
-                      href={`/debts/${debt.id}/edit`}
-                      className="w-8 h-8 rounded-lg bg-[#f1f5f9] flex items-center justify-center text-[#64748b] hover:bg-[#e2e8f0] hover:text-[#1e40af] transition-colors shrink-0 mt-0.5"
-                    >
-                      <Pencil className="w-3.5 h-3.5" />
-                    </Link>
+
+                    {/* Metrics row */}
+                    <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+                      <span className="font-numeric text-base font-bold text-[#0F172A]">
+                        {formatCurrency(debt.currentBalance)}
+                      </span>
+                      <span className="text-xs text-[#667085]">{debt.interestRate}% год.</span>
+                      <span className="text-xs text-[#667085]">
+                        мин. {formatCurrency(debt.minimumPayment)}
+                      </span>
+                    </div>
+
+                    {/* Progress bar */}
+                    {progressPercent !== null && (
+                      <div className="mt-3">
+                        <div className="flex justify-between text-[10px] text-[#94a3b8] mb-1">
+                          <span>Погашено</span>
+                          <span className="font-semibold">{progressPercent}%</span>
+                        </div>
+                        <div className="h-1.5 bg-[#F1F5F9] rounded-full overflow-hidden">
+                          <div
+                            className="h-full rounded-full transition-all duration-700"
+                            style={{
+                              width: `${progressPercent}%`,
+                              background:
+                                debt.interestRate > 20
+                                  ? "linear-gradient(90deg, #F79009, #FBBF24)"
+                                  : "linear-gradient(90deg, #6C63FF, #5B8DEF)",
+                            }}
+                          />
+                        </div>
+                      </div>
+                    )}
                   </div>
-                </CardContent>
-              </Card>
+
+                  <Link
+                    href={`/debts/${debt.id}/edit`}
+                    className="w-8 h-8 rounded-xl bg-[#F7F8FC] flex items-center justify-center text-[#667085] hover:bg-[#EEF2FF] hover:text-[#6C63FF] transition-colors shrink-0"
+                  >
+                    <Pencil className="w-3.5 h-3.5" />
+                  </Link>
+                </div>
+              </div>
             );
           })}
         </div>
@@ -196,32 +211,34 @@ export default async function DebtsPage() {
 
       {/* Closed debts */}
       {closedDebts.length > 0 && (
-        <div className="space-y-3">
-          <h2 className="text-xs font-semibold text-[#94a3b8] uppercase tracking-widest px-1">
-            Закрытые — {closedDebts.length}
-          </h2>
+        <div className="space-y-2.5">
+          <p className="text-[10px] font-bold text-[#94a3b8] uppercase tracking-widest px-1">
+            Закрытые · {closedDebts.length}
+          </p>
           {closedDebts.map((debt) => (
-            <Card key={debt.id} className="border-0 shadow-sm rounded-2xl bg-white opacity-55">
-              <CardContent className="py-4 px-5">
-                <div className="flex items-center justify-between gap-3">
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="font-medium text-[#64748b] truncate">{debt.creditorName}</span>
-                      <Badge className="text-xs shrink-0 border-0 bg-emerald-100 text-emerald-700 flex items-center gap-1">
-                        <CheckCircle2 className="w-3 h-3" />Закрыт
-                      </Badge>
-                    </div>
-                    <p className="text-sm text-[#94a3b8]">{debt.debtType}</p>
+            <div
+              key={debt.id}
+              className="bg-white border border-[#E7ECF3] rounded-2xl px-5 py-4 opacity-50 hover:opacity-70 transition-opacity"
+            >
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="font-medium text-[#667085] truncate text-sm">{debt.creditorName}</span>
+                    <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-600 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded-full">
+                      <CheckCircle2 className="w-2.5 h-2.5" />
+                      Закрыт
+                    </span>
                   </div>
-                  <Link
-                    href={`/debts/${debt.id}/edit`}
-                    className="w-8 h-8 rounded-lg bg-[#f1f5f9] flex items-center justify-center text-[#64748b] hover:bg-[#e2e8f0] transition-colors shrink-0"
-                  >
-                    <Pencil className="w-3.5 h-3.5" />
-                  </Link>
+                  <p className="text-xs text-[#94a3b8]">{debt.debtType}</p>
                 </div>
-              </CardContent>
-            </Card>
+                <Link
+                  href={`/debts/${debt.id}/edit`}
+                  className="w-7 h-7 rounded-lg bg-[#F7F8FC] flex items-center justify-center text-[#94a3b8] hover:bg-[#E7ECF3] transition-colors shrink-0"
+                >
+                  <Pencil className="w-3 h-3" />
+                </Link>
+              </div>
+            </div>
           ))}
         </div>
       )}

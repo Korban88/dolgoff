@@ -62,10 +62,10 @@ export function MetricCard({
             width: "36px",
             height: "36px",
             borderRadius: "10px",
-            background: "rgba(181,245,98,0.08)",
+            background: "var(--accent-bg)",
           }}
         >
-          <Icon className="w-5 h-5" style={{ strokeWidth: 1.75, color: "#B5F562" }} />
+          <Icon className="w-5 h-5" style={{ strokeWidth: 1.75, color: "var(--accent-primary)" }} />
         </div>
       )}
       <p
@@ -74,7 +74,7 @@ export function MetricCard({
           fontWeight: 500,
           textTransform: "uppercase",
           letterSpacing: "0.05em",
-          color: "#8A8A8A",
+          color: "var(--text-secondary)",
           marginBottom: "8px",
         }}
       >
@@ -82,7 +82,7 @@ export function MetricCard({
       </p>
       <p
         className="tabular-nums leading-none"
-        style={{ fontSize: "28px", fontWeight: 700, letterSpacing: "-0.025em", color: "#FFFFFF" }}
+        style={{ fontSize: "28px", fontWeight: 700, letterSpacing: "-0.025em", color: "var(--text-primary)" }}
       >
         {formatValue(displayValue, format, suffix)}
       </p>
@@ -95,7 +95,7 @@ export function MetricCard({
         </p>
       )}
       {sublabel && !trend && (
-        <p className="text-[12px] mt-1.5" style={{ color: "#555555" }}>
+        <p className="text-[12px] mt-1.5" style={{ color: "var(--text-tertiary)" }}>
           {sublabel}
         </p>
       )}

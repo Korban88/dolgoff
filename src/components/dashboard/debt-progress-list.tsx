@@ -46,14 +46,14 @@ export function DebtProgressList({ debts, payoffDates }: DebtProgressListProps) 
         className="rounded-[18px] p-8 text-center"
         style={{ border: "1px dashed var(--border-card)" }}
       >
-        <p className="text-[13px]" style={{ color: "#555555" }}>Нет активных долгов</p>
+        <p className="text-[13px]" style={{ color: "var(--text-tertiary)" }}>Нет активных долгов</p>
       </div>
     );
   }
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "16px" }} className="animate-fade-in-up stagger-3">
-      <p style={{ fontSize: "10.5px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.10em", color: "#555555", paddingLeft: "2px" }}>
+      <p style={{ fontSize: "10.5px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.10em", color: "var(--text-tertiary)", paddingLeft: "2px" }}>
         Долги · {sorted.length}
       </p>
       {sorted.map((debt) => {
@@ -74,6 +74,7 @@ export function DebtProgressList({ debts, payoffDates }: DebtProgressListProps) 
               border: "1px solid var(--border-card)",
               borderRadius: "var(--radius-card)",
               padding: "20px 24px",
+              boxShadow: "var(--shadow-card)",
             }}
           >
             {/* Top row */}
@@ -88,18 +89,18 @@ export function DebtProgressList({ debts, payoffDates }: DebtProgressListProps) 
                     background: rateColor, flexShrink: 0, display: "inline-block",
                     boxShadow: `0 0 6px ${rateColor}60`,
                   }} />
-                  <span style={{ fontSize: "15px", fontWeight: 600, color: "#FFFFFF", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                  <span style={{ fontSize: "15px", fontWeight: 600, color: "var(--text-primary)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                     {debt.creditorName}
                   </span>
                 </div>
 
                 {/* Badges row */}
                 <div style={{ display: "flex", alignItems: "center", gap: "6px", flexWrap: "wrap", marginBottom: "8px", paddingLeft: "18px" }}>
-                  <span style={{ fontSize: "11px", fontWeight: 500, color: "#555555", background: "rgba(255,255,255,0.05)", borderRadius: "var(--radius-badge)", padding: "3px 8px" }}>
+                  <span style={{ fontSize: "11px", fontWeight: 500, color: "var(--text-tertiary)", background: "var(--bg-input)", borderRadius: "var(--radius-badge)", padding: "3px 8px" }}>
                     {debt.debtType}
                   </span>
                   {isFirst && (
-                    <span style={{ fontSize: "11px", fontWeight: 600, color: "#4DFF91", background: "rgba(77,255,145,0.10)", borderRadius: "var(--radius-badge)", padding: "3px 10px" }}>
+                    <span style={{ fontSize: "11px", fontWeight: 600, color: "var(--color-success)", background: "var(--color-success-light)", borderRadius: "var(--radius-badge)", padding: "3px 10px" }}>
                       Первым
                     </span>
                   )}
@@ -108,18 +109,18 @@ export function DebtProgressList({ debts, payoffDates }: DebtProgressListProps) 
                 {/* Rate + min payment */}
                 <div style={{ display: "flex", alignItems: "center", gap: "12px", paddingLeft: "18px" }}>
                   <span style={{ fontSize: "13px", fontWeight: 600, color: rateColor }}>{debt.interestRate}% год.</span>
-                  <span style={{ fontSize: "13px", color: "#555555" }}>мин. {formatCurrency(debt.minimumPayment)}</span>
+                  <span style={{ fontSize: "13px", color: "var(--text-tertiary)" }}>мин. {formatCurrency(debt.minimumPayment)}</span>
                 </div>
               </div>
 
               {/* Right: balance + payoff date + edit */}
               <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "10px", flexShrink: 0 }}>
                 <div style={{ textAlign: "right" }}>
-                  <span style={{ fontSize: "28px", fontWeight: 700, letterSpacing: "-0.025em", color: "#FFFFFF", fontVariantNumeric: "tabular-nums", lineHeight: 1, display: "block" }}>
+                  <span style={{ fontSize: "28px", fontWeight: 700, letterSpacing: "-0.025em", color: "var(--text-primary)", fontVariantNumeric: "tabular-nums", lineHeight: 1, display: "block" }}>
                     {formatCurrency(debt.currentBalance)}
                   </span>
                   {payoffDate && (
-                    <span style={{ fontSize: "11px", color: "#555555", marginTop: "3px", display: "block" }}>
+                    <span style={{ fontSize: "11px", color: "var(--text-tertiary)", marginTop: "3px", display: "block" }}>
                       до {formatShortDate(payoffDate)}
                     </span>
                   )}
@@ -130,7 +131,7 @@ export function DebtProgressList({ debts, payoffDates }: DebtProgressListProps) 
                   style={{
                     width: "28px", height: "28px", borderRadius: "6px",
                     display: "flex", alignItems: "center", justifyContent: "center",
-                    color: "#8A8A8A",
+                    color: "var(--text-secondary)",
                   }}
                 >
                   <Pencil style={{ width: "13px", height: "13px" }} />
@@ -141,11 +142,11 @@ export function DebtProgressList({ debts, payoffDates }: DebtProgressListProps) 
             {/* Progress bar */}
             {progress !== null && progress > 0 && (
               <div style={{ marginTop: "16px" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", fontSize: "11px", color: "#555555", marginBottom: "6px" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", fontSize: "11px", color: "var(--text-tertiary)", marginBottom: "6px" }}>
                   <span>Погашено</span>
-                  <span style={{ fontWeight: 600, color: "#8A8A8A" }}>{Math.round(progress)}%</span>
+                  <span style={{ fontWeight: 600, color: "var(--text-secondary)" }}>{Math.round(progress)}%</span>
                 </div>
-                <div style={{ height: "6px", borderRadius: "3px", background: "rgba(255,255,255,0.06)", overflow: "hidden" }}>
+                <div style={{ height: "6px", borderRadius: "3px", background: "var(--progress-bg)", overflow: "hidden" }}>
                   <div style={{
                     width: `${progress}%`, height: "100%", borderRadius: "3px",
                     background: getProgressGradient(debt.interestRate),

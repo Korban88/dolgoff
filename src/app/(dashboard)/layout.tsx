@@ -10,9 +10,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </main>
         <footer
           className="px-5 md:px-8 py-4"
-          style={{ background: "transparent", borderTop: "1px solid #1A1A1A" }}
+          style={{ background: "transparent", borderTop: "1px solid var(--border-light)" }}
         >
-          <p style={{ fontSize: "12px", letterSpacing: "0.03em", color: "#555555" }}>
+          <p style={{ fontSize: "12px", letterSpacing: "0.03em", color: "var(--text-tertiary)" }}>
             ДолгOFF — инструмент для расчётов. Не является финансовой консультацией.
             Результаты носят исключительно информационный характер.
           </p>

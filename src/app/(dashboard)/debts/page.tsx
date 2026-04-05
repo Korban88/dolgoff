@@ -20,10 +20,10 @@ function getProgressGradient(rate: number): string {
 }
 
 function getTagBg(color: string): string {
-  if (color === "#FF4D4D") return "rgba(255,77,77,0.12)";
-  if (color === "#4DFF91") return "rgba(77,255,145,0.10)";
-  if (color === "#4D9FFF") return "rgba(77,159,255,0.12)";
-  return "rgba(255,255,255,0.08)";
+  if (color === "#FF4D4D") return "var(--color-danger-light)";
+  if (color === "#4DFF91") return "var(--color-success-light)";
+  if (color === "#4D9FFF") return "var(--color-info-light)";
+  return "var(--bg-input)";
 }
 
 function getSmartTag(
@@ -70,17 +70,17 @@ export default async function DebtsPage() {
       {/* ── Header ── */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <div>
-          <h1 style={{ fontSize: "22px", fontWeight: 700, letterSpacing: "-0.02em", color: "#FFFFFF" }}>
+          <h1 style={{ fontSize: "22px", fontWeight: 700, letterSpacing: "-0.02em", color: "var(--text-primary)" }}>
             Мои долги
           </h1>
-          <p style={{ fontSize: "13px", color: "#555555", marginTop: "2px" }}>
+          <p style={{ fontSize: "13px", color: "var(--text-tertiary)", marginTop: "2px" }}>
             Все кредиты в одном месте
           </p>
         </div>
         <Button
           nativeButton={false} render={<Link href="/debts/new" />}
           className="h-9 px-4 text-[13px] font-semibold transition-all duration-200"
-          style={{ background: "#B5F562", color: "#0A0A0A", borderRadius: "12px" }}
+          style={{ background: "var(--accent-primary)", color: "#FFFFFF", borderRadius: "12px" }}
         >
           <Plus className="w-3.5 h-3.5 mr-1" />+ Новый долг
         </Button>
@@ -90,9 +90,11 @@ export default async function DebtsPage() {
       {activeDebts.length > 0 && (
         <div
           style={{
-            background: "var(--surface-base)",
+            background: "var(--surface-card)",
+            border: "1px solid var(--border-card)",
             borderRadius: "var(--radius-button)",
             padding: "16px 24px",
+            boxShadow: "var(--shadow-card)",
             display: "grid",
             gridTemplateColumns: "repeat(2, 1fr)",
             gap: "16px 32px",
@@ -106,14 +108,14 @@ export default async function DebtsPage() {
             { label: "Платёж / мес",  value: formatCurrency(totalMinPayment),       sub: "минимум" },
           ].map(({ label, value, sub }) => (
             <div key={label}>
-              <p style={{ fontSize: "11px", fontWeight: 500, textTransform: "uppercase", letterSpacing: "0.05em", color: "#8A8A8A", marginBottom: "4px" }}>
+              <p style={{ fontSize: "11px", fontWeight: 500, textTransform: "uppercase", letterSpacing: "0.05em", color: "var(--text-secondary)", marginBottom: "4px" }}>
                 {label}
               </p>
-              <p style={{ fontSize: "24px", fontWeight: 700, letterSpacing: "-0.025em", color: "#FFFFFF", lineHeight: 1 }}>
+              <p style={{ fontSize: "24px", fontWeight: 700, letterSpacing: "-0.025em", color: "var(--text-primary)", lineHeight: 1 }}>
                 {value}
               </p>
               {sub && (
-                <p style={{ fontSize: "11px", color: "#555555", marginTop: "2px" }}>{sub}</p>
+                <p style={{ fontSize: "11px", color: "var(--text-tertiary)", marginTop: "2px" }}>{sub}</p>
               )}
             </div>
           ))}
@@ -129,26 +131,27 @@ export default async function DebtsPage() {
             borderRadius: "16px",
             padding: "64px 24px",
             textAlign: "center",
+            boxShadow: "var(--shadow-card)",
           }}
         >
           <div
             style={{
               width: "56px", height: "56px", borderRadius: "14px",
-              background: "var(--surface-elevated)",
+              background: "var(--bg-input)",
               display: "flex", alignItems: "center", justifyContent: "center",
               margin: "0 auto 20px",
             }}
           >
-            <Plus style={{ width: "28px", height: "28px", color: "#555555" }} />
+            <Plus style={{ width: "28px", height: "28px", color: "var(--text-tertiary)" }} />
           </div>
-          <p style={{ fontWeight: 600, color: "#FFFFFF", marginBottom: "8px" }}>Долгов пока нет</p>
-          <p style={{ fontSize: "13px", color: "#8A8A8A", maxWidth: "280px", margin: "0 auto 24px" }}>
+          <p style={{ fontWeight: 600, color: "var(--text-primary)", marginBottom: "8px" }}>Долгов пока нет</p>
+          <p style={{ fontSize: "13px", color: "var(--text-secondary)", maxWidth: "280px", margin: "0 auto 24px" }}>
             Добавьте первый кредит — и увидите полную картину и план погашения
           </p>
           <Button
             nativeButton={false} render={<Link href="/debts/new" />}
             className="px-6 h-10 font-semibold text-[13px]"
-            style={{ background: "#B5F562", color: "#0A0A0A", borderRadius: "12px" }}
+            style={{ background: "var(--accent-primary)", color: "#FFFFFF", borderRadius: "12px" }}
           >
             Добавить первый долг
           </Button>
@@ -158,7 +161,7 @@ export default async function DebtsPage() {
       {/* ── Active debts ── */}
       {activeDebts.length > 0 && (
         <div>
-          <p style={{ fontSize: "10.5px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.10em", color: "#555555", marginBottom: "12px", paddingLeft: "2px" }}>
+          <p style={{ fontSize: "10.5px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.10em", color: "var(--text-tertiary)", marginBottom: "12px", paddingLeft: "2px" }}>
             Активные · {activeDebts.length}
           </p>
 
@@ -183,6 +186,7 @@ export default async function DebtsPage() {
                     border: "1px solid var(--border-card)",
                     borderRadius: "var(--radius-card)",
                     padding: "20px 24px",
+                    boxShadow: "var(--shadow-card)",
                   }}
                 >
                   {/* Top row */}
@@ -197,14 +201,14 @@ export default async function DebtsPage() {
                           background: rateColor, flexShrink: 0, display: "inline-block",
                           boxShadow: `0 0 6px ${rateColor}60`,
                         }} />
-                        <span style={{ fontSize: "15px", fontWeight: 600, color: "#FFFFFF", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                        <span style={{ fontSize: "15px", fontWeight: 600, color: "var(--text-primary)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                           {debt.creditorName}
                         </span>
                       </div>
 
                       {/* Badges row */}
                       <div style={{ display: "flex", alignItems: "center", gap: "6px", flexWrap: "wrap", marginBottom: "8px", paddingLeft: "18px" }}>
-                        <span style={{ fontSize: "11px", fontWeight: 500, color: "#555555", background: "rgba(255,255,255,0.05)", borderRadius: "var(--radius-badge)", padding: "3px 8px" }}>
+                        <span style={{ fontSize: "11px", fontWeight: 500, color: "var(--text-tertiary)", background: "var(--bg-input)", borderRadius: "var(--radius-badge)", padding: "3px 8px" }}>
                           {debt.debtType}
                         </span>
                         {tag && (
@@ -217,13 +221,13 @@ export default async function DebtsPage() {
                       {/* Rate + min payment */}
                       <div style={{ display: "flex", alignItems: "center", gap: "12px", paddingLeft: "18px" }}>
                         <span style={{ fontSize: "13px", fontWeight: 600, color: rateColor }}>{debt.interestRate}% год.</span>
-                        <span style={{ fontSize: "13px", color: "#555555" }}>мин. {formatCurrency(debt.minimumPayment)}</span>
+                        <span style={{ fontSize: "13px", color: "var(--text-tertiary)" }}>мин. {formatCurrency(debt.minimumPayment)}</span>
                       </div>
                     </div>
 
                     {/* Right: balance + edit */}
                     <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "10px", flexShrink: 0 }}>
-                      <span style={{ fontSize: "28px", fontWeight: 700, letterSpacing: "-0.025em", color: "#FFFFFF", fontVariantNumeric: "tabular-nums", lineHeight: 1 }}>
+                      <span style={{ fontSize: "28px", fontWeight: 700, letterSpacing: "-0.025em", color: "var(--text-primary)", fontVariantNumeric: "tabular-nums", lineHeight: 1 }}>
                         {formatCurrency(debt.currentBalance)}
                       </span>
                       <Link
@@ -232,7 +236,7 @@ export default async function DebtsPage() {
                         style={{
                           width: "28px", height: "28px", borderRadius: "6px",
                           display: "flex", alignItems: "center", justifyContent: "center",
-                          color: "#8A8A8A",
+                          color: "var(--text-secondary)",
                         }}
                       >
                         <Pencil style={{ width: "13px", height: "13px" }} />
@@ -243,11 +247,11 @@ export default async function DebtsPage() {
                   {/* Progress bar */}
                   {progressPercent !== null && (
                     <div style={{ marginTop: "16px" }}>
-                      <div style={{ display: "flex", justifyContent: "space-between", fontSize: "11px", color: "#555555", marginBottom: "6px" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", fontSize: "11px", color: "var(--text-tertiary)", marginBottom: "6px" }}>
                         <span>Погашено</span>
-                        <span style={{ fontWeight: 600, color: "#8A8A8A" }}>{progressPercent}%</span>
+                        <span style={{ fontWeight: 600, color: "var(--text-secondary)" }}>{progressPercent}%</span>
                       </div>
-                      <div style={{ height: "6px", borderRadius: "3px", background: "rgba(255,255,255,0.06)", overflow: "hidden" }}>
+                      <div style={{ height: "6px", borderRadius: "3px", background: "var(--progress-bg)", overflow: "hidden" }}>
                         <div style={{
                           width: `${progressPercent}%`, height: "100%", borderRadius: "3px",
                           background: getProgressGradient(debt.interestRate),
@@ -266,7 +270,7 @@ export default async function DebtsPage() {
       {/* ── Closed debts ── */}
       {closedDebts.length > 0 && (
         <div>
-          <p style={{ fontSize: "10.5px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.10em", color: "#555555", marginBottom: "12px", paddingLeft: "2px" }}>
+          <p style={{ fontSize: "10.5px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.10em", color: "var(--text-tertiary)", marginBottom: "12px", paddingLeft: "2px" }}>
             Закрытые · {closedDebts.length}
           </p>
           <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
@@ -285,22 +289,22 @@ export default async function DebtsPage() {
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "12px" }}>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
-                      <span style={{ fontSize: "14px", fontWeight: 500, color: "#8A8A8A", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                      <span style={{ fontSize: "14px", fontWeight: 500, color: "var(--text-secondary)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                         {debt.creditorName}
                       </span>
-                      <span style={{ display: "inline-flex", alignItems: "center", gap: "4px", fontSize: "11px", fontWeight: 600, color: "#4DFF91", background: "rgba(77,255,145,0.08)", borderRadius: "6px", padding: "3px 8px" }}>
+                      <span style={{ display: "inline-flex", alignItems: "center", gap: "4px", fontSize: "11px", fontWeight: 600, color: "var(--color-success)", background: "var(--color-success-light)", borderRadius: "6px", padding: "3px 8px" }}>
                         <CheckCircle2 style={{ width: "10px", height: "10px" }} />
                         Закрыт
                       </span>
                     </div>
-                    <p style={{ fontSize: "12px", color: "#555555" }}>{debt.debtType}</p>
+                    <p style={{ fontSize: "12px", color: "var(--text-tertiary)" }}>{debt.debtType}</p>
                   </div>
                   <Link
                     href={`/debts/${debt.id}/edit`}
                     style={{
                       width: "28px", height: "28px", borderRadius: "8px",
                       display: "flex", alignItems: "center", justifyContent: "center",
-                      color: "#555555", flexShrink: 0,
+                      color: "var(--text-tertiary)", flexShrink: 0,
                     }}
                   >
                     <Pencil style={{ width: "12px", height: "12px" }} />

@@ -17,8 +17,9 @@ export function DashboardHero({ result, payoffDate }: DashboardHeroProps) {
     <div
       className="rounded-[16px] animate-fade-in-up"
       style={{
-        background: `linear-gradient(135deg, rgba(163,230,53,0.05) 0%, rgba(30,64,175,0.08) 100%), var(--surface-card)`,
-        border: "1px solid rgba(163,230,53,0.15)",
+        background: `linear-gradient(135deg, var(--accent-primary-light) 0%, rgba(30,64,175,0.06) 100%), var(--surface-card)`,
+        border: "1px solid var(--border-focus)",
+        borderColor: "color-mix(in srgb, var(--accent-primary) 25%, transparent)",
         padding: "32px",
         boxShadow: "var(--shadow-card)",
         transition: "box-shadow 0.2s ease, border-color 0.2s ease",
@@ -31,7 +32,8 @@ export function DashboardHero({ result, payoffDate }: DashboardHeroProps) {
           fontWeight: 600,
           textTransform: "uppercase",
           letterSpacing: "0.08em",
-          color: "rgba(163,230,53,0.6)",
+          color: "var(--accent-primary)",
+          opacity: 0.7,
           marginBottom: "12px",
         }}
       >
@@ -43,7 +45,7 @@ export function DashboardHero({ result, payoffDate }: DashboardHeroProps) {
         style={{
           fontSize: "48px",
           fontWeight: 800,
-          color: "#FFFFFF",
+          color: "var(--text-primary)",
           letterSpacing: "-0.03em",
           lineHeight: 1.05,
           marginBottom: "8px",
@@ -51,7 +53,7 @@ export function DashboardHero({ result, payoffDate }: DashboardHeroProps) {
       >
         {dateLabel}
       </p>
-      <p style={{ fontSize: "14px", color: "#8A8A8A", marginBottom: "28px" }}>
+      <p style={{ fontSize: "14px", color: "var(--text-secondary)", marginBottom: "28px" }}>
         {formatMonths(result.totalMonths)} при текущем плане
       </p>
 
@@ -64,8 +66,8 @@ export function DashboardHero({ result, payoffDate }: DashboardHeroProps) {
           <div
             key={label}
             style={{
-              background: "rgba(255,255,255,0.05)",
-              border: "1px solid rgba(255,255,255,0.08)",
+              background: "var(--bg-input)",
+              border: "1px solid var(--border-card)",
               borderRadius: "10px",
               padding: "8px 16px",
               display: "flex",
@@ -78,7 +80,7 @@ export function DashboardHero({ result, payoffDate }: DashboardHeroProps) {
               fontWeight: 500,
               textTransform: "uppercase",
               letterSpacing: "0.05em",
-              color: "#555555",
+              color: "var(--text-tertiary)",
             }}>
               {label}
             </span>
@@ -86,7 +88,7 @@ export function DashboardHero({ result, payoffDate }: DashboardHeroProps) {
               fontSize: "16px",
               fontWeight: 700,
               letterSpacing: "-0.02em",
-              color: "#B5F562",
+              color: "var(--accent-primary)",
               fontVariantNumeric: "tabular-nums",
             }}>
               {value}
@@ -101,8 +103,8 @@ export function DashboardHero({ result, payoffDate }: DashboardHeroProps) {
           nativeButton={false} render={<Link href="/simulator" />}
           className="h-10 px-5 text-[14px] font-semibold transition-all duration-150"
           style={{
-            background: "#B5F562",
-            color: "#0A0A0A",
+            background: "var(--accent-primary)",
+            color: "#FFFFFF",
             border: "none",
             borderRadius: "var(--radius-button)",
           }}
@@ -115,8 +117,8 @@ export function DashboardHero({ result, payoffDate }: DashboardHeroProps) {
           className="h-10 px-5 text-[14px] font-semibold transition-all duration-150 hero-outline-btn"
           style={{
             background: "transparent",
-            color: "#FFFFFF",
-            border: "1px solid rgba(255,255,255,0.15)",
+            color: "var(--text-primary)",
+            border: "1px solid var(--border-card)",
             borderRadius: "var(--radius-button)",
           }}
         >

@@ -53,7 +53,7 @@ function CustomTooltip({ active, payload, label }: any) {
     <div
       className="rounded-[14px] px-4 py-3 text-[12px]"
       style={{
-        background: "#1A1A1A",
+        background: "var(--surface-card)",
         border: "1px solid var(--border-default)",
         boxShadow: "var(--shadow-lg)",
       }}

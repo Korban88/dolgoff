@@ -16,15 +16,15 @@ export function ScenarioCards({ presets, baseResult, scenarioResults }: Scenario
   return (
     <div className="space-y-3 animate-fade-in-up stagger-2">
       <div className="flex items-center justify-between">
-        <p style={{ fontSize: "14px", fontWeight: 600, color: "#FFFFFF" }}>
+        <p style={{ fontSize: "14px", fontWeight: 600, color: "var(--text-primary)" }}>
           Сценарии доплат
         </p>
         <Link
           href="/simulator"
           className="flex items-center gap-1 transition-colors"
-          style={{ fontSize: "12px", fontWeight: 500, color: "#555555" }}
-          onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "#B5F562")}
-          onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = "#555555")}
+          style={{ fontSize: "12px", fontWeight: 500, color: "var(--text-tertiary)" }}
+          onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--accent-primary)")}
+          onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--text-tertiary)")}
         >
           Свой расчёт <ArrowRight className="w-3 h-3" />
         </Link>
@@ -52,8 +52,8 @@ export function ScenarioCards({ presets, baseResult, scenarioResults }: Scenario
                     top: "-12px",
                     left: "50%",
                     transform: "translateX(-50%)",
-                    background: "#B5F562",
-                    color: "#0A0A0A",
+                    background: "var(--accent-primary)",
+                    color: "#FFFFFF",
                     fontSize: "11px",
                     fontWeight: 700,
                     textTransform: "uppercase",
@@ -72,8 +72,8 @@ export function ScenarioCards({ presets, baseResult, scenarioResults }: Scenario
                 href={`/simulator?extra=${amount}`}
                 className="relative block p-5"
                 style={{
-                  background: isHighlight ? "var(--surface-elevated)" : "var(--surface-card)",
-                  border: isHighlight ? "1px solid #B5F562" : "1px solid var(--border-card)",
+                  background: isHighlight ? "var(--accent-bg)" : "var(--surface-card)",
+                  border: isHighlight ? "1px solid var(--accent-primary)" : "1px solid var(--border-card)",
                   borderRadius: "var(--radius-card)",
                   boxShadow: "var(--shadow-card)",
                 }}
@@ -84,7 +84,7 @@ export function ScenarioCards({ presets, baseResult, scenarioResults }: Scenario
                     fontWeight: 500,
                     textTransform: "uppercase",
                     letterSpacing: "0.05em",
-                    color: "#555555",
+                    color: "var(--text-tertiary)",
                     marginBottom: "12px",
                   }}
                 >
@@ -98,7 +98,7 @@ export function ScenarioCards({ presets, baseResult, scenarioResults }: Scenario
                       fontSize: "28px",
                       fontWeight: 800,
                       letterSpacing: "-0.03em",
-                      color: "#FFFFFF",
+                      color: "var(--text-primary)",
                       marginBottom: "4px",
                     }}
                   >
@@ -109,7 +109,7 @@ export function ScenarioCards({ presets, baseResult, scenarioResults }: Scenario
                 {savedMoney > 0 && (
                   <p
                     className="tabular-nums"
-                    style={{ fontSize: "12px", fontWeight: 600, marginTop: "8px", color: "#a3e635" }}
+                    style={{ fontSize: "12px", fontWeight: 600, marginTop: "8px", color: "var(--accent-primary)" }}
                   >
                     ✧ экономия {formatCurrency(savedMoney)}
                   </p>

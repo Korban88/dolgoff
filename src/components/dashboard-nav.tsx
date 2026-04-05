@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
-import { LayoutDashboard, CreditCard, Sliders, Settings, LogOut, BookOpen } from "lucide-react";
+import { LayoutDashboard, CreditCard, Sliders, Settings, LogOut, BookOpen, Sun, Moon } from "lucide-react";
+import { useTheme } from "@/hooks/use-theme";
 
 const navItems = [
   { href: "/dashboard",  label: "Дашборд",      icon: LayoutDashboard },
@@ -15,6 +16,7 @@ const navItems = [
 
 export function Sidebar() {
   const pathname = usePathname();
+  const { theme, toggle } = useTheme();
 
   return (
     <aside
@@ -33,7 +35,7 @@ export function Sidebar() {
       >
         <span
           style={{
-            color: "#FFFFFF",
+            color: "var(--text-primary)",
             fontSize: "22px",
             fontWeight: 800,
             letterSpacing: "-0.025em",
@@ -58,8 +60,8 @@ export function Sidebar() {
               style={{
                 padding: "10px 16px",
                 borderRadius: "10px",
-                background: active ? "rgba(163,230,53,0.08)" : "transparent",
-                color: active ? "#FFFFFF" : "#8A8A8A",
+                background: active ? "var(--accent-primary-light)" : "transparent",
+                color: active ? "var(--text-primary)" : "var(--text-secondary)",
                 fontWeight: active ? 600 : 500,
               }}
               data-active={active ? "true" : undefined}
@@ -70,7 +72,7 @@ export function Sidebar() {
                   height: "20px",
                   flexShrink: 0,
                   strokeWidth: 1.5,
-                  color: active ? "#B5F562" : "#555555",
+                  color: active ? "var(--accent-primary)" : "var(--text-tertiary)",
                 }}
               />
               {label}
@@ -79,15 +81,37 @@ export function Sidebar() {
         })}
       </nav>
 
-      {/* Sign out */}
-      <div style={{ padding: "12px 12px 24px" }}>
+      {/* Bottom actions */}
+      <div style={{ padding: "12px 12px 24px", display: "flex", flexDirection: "column", gap: "2px" }}>
+        {/* Theme toggle */}
+        <button
+          onClick={toggle}
+          className="flex items-center gap-3 w-full text-[14px] transition-all duration-150"
+          style={{
+            padding: "10px 16px",
+            borderRadius: "10px",
+            color: "var(--text-secondary)",
+            fontWeight: 500,
+            background: "transparent",
+            border: "none",
+            cursor: "pointer",
+          }}
+        >
+          {theme === "dark" ? (
+            <Sun style={{ width: "20px", height: "20px", flexShrink: 0, strokeWidth: 1.5, color: "var(--text-tertiary)" }} />
+          ) : (
+            <Moon style={{ width: "20px", height: "20px", flexShrink: 0, strokeWidth: 1.5, color: "var(--text-tertiary)" }} />
+          )}
+          {theme === "dark" ? "Светлая тема" : "Тёмная тема"}
+        </button>
+        {/* Sign out */}
         <button
           onClick={() => signOut({ callbackUrl: "/" })}
           className="nav-signout flex items-center gap-3 w-full text-[14px] transition-all duration-150"
           style={{
             padding: "10px 16px",
             borderRadius: "10px",
-            color: "#555555",
+            color: "var(--text-tertiary)",
             fontWeight: 500,
             background: "transparent",
             border: "none",

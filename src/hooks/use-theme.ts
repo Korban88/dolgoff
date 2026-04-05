@@ -5,30 +5,32 @@ import { useEffect, useState } from "react";
 export type Theme = "light" | "dark";
 
 const STORAGE_KEY = "dolgoff-theme";
+const THEME_EVENT = "dolgoff-theme-change";
+
+function applyTheme(next: Theme) {
+  localStorage.setItem(STORAGE_KEY, next);
+  document.documentElement.setAttribute("data-theme", next);
+  window.dispatchEvent(new CustomEvent<Theme>(THEME_EVENT, { detail: next }));
+}
 
 export function useTheme() {
-  const [theme, setTheme] = useState<Theme>("light");
+  const [theme, setTheme] = useState<Theme>("dark");
 
   useEffect(() => {
-    // Read from localStorage or from the HTML attribute set by ThemeScript
     const stored = localStorage.getItem(STORAGE_KEY) as Theme | null;
-    const attr = document.documentElement.getAttribute("data-theme") as Theme;
-    const initial = stored ?? attr ?? "light";
+    const attr = document.documentElement.getAttribute("data-theme") as Theme | null;
+    const initial: Theme = stored ?? attr ?? "dark";
     setTheme(initial);
+
+    const handler = (e: Event) => {
+      setTheme((e as CustomEvent<Theme>).detail);
+    };
+    window.addEventListener(THEME_EVENT, handler);
+    return () => window.removeEventListener(THEME_EVENT, handler);
   }, []);
 
-  const toggle = () => {
-    const next: Theme = theme === "light" ? "dark" : "light";
-    setTheme(next);
-    localStorage.setItem(STORAGE_KEY, next);
-    document.documentElement.setAttribute("data-theme", next);
-  };
-
-  const set = (t: Theme) => {
-    setTheme(t);
-    localStorage.setItem(STORAGE_KEY, t);
-    document.documentElement.setAttribute("data-theme", t);
-  };
+  const toggle = () => applyTheme(theme === "light" ? "dark" : "light");
+  const set = (t: Theme) => applyTheme(t);
 
   return { theme, toggle, set };
 }

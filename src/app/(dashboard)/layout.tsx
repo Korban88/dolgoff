@@ -1,11 +1,12 @@
-import { Sidebar, BottomNav } from "@/components/dashboard-nav";
+import { Sidebar, MobileNav } from "@/components/dashboard-nav";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-screen" style={{ background: "var(--bg-page)" }}>
       <Sidebar />
       <div className="flex flex-col flex-1 min-w-0">
-        <main className="flex-1 p-5 md:p-8 md:px-8 pb-24 md:pb-8 animate-page-in">
+        <MobileNav />
+        <main className="flex-1 p-5 md:p-8 md:px-8 pt-[72px] md:pt-8 pb-8 animate-page-in">
           {children}
         </main>
         <footer
@@ -18,7 +19,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </p>
         </footer>
       </div>
-      <BottomNav />
     </div>
   );
 }

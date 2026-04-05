@@ -52,8 +52,8 @@ export function FreedomCalculator({ freedMonthlyPayment, totalMonths }: FreedomC
     >
       {/* Header */}
       <div>
-        <p style={{ fontSize: "14px", fontWeight: 600, color: "#FFFFFF" }}>После закрытия долгов</p>
-        <p style={{ fontSize: "12px", marginTop: "4px", color: "#555555" }}>
+        <p style={{ fontSize: "14px", fontWeight: 600, color: "var(--text-primary)" }}>После закрытия долгов</p>
+        <p style={{ fontSize: "12px", marginTop: "4px", color: "var(--text-tertiary)" }}>
           {formatCurrency(freedMonthlyPayment)}/мес освободится через {formatMonths(totalMonths)}
         </p>
       </div>
@@ -69,14 +69,14 @@ export function FreedomCalculator({ freedMonthlyPayment, totalMonths }: FreedomC
                 ? {
                     padding: "6px 16px", borderRadius: "20px",
                     fontSize: "12px", fontWeight: 600,
-                    background: "#B5F562", color: "#0A0A0A",
-                    border: "1px solid #B5F562", cursor: "pointer",
+                    background: "var(--accent-primary)", color: "#FFFFFF",
+                    border: "1px solid var(--accent-primary)", cursor: "pointer",
                   }
                 : {
                     padding: "6px 16px", borderRadius: "20px",
                     fontSize: "12px", fontWeight: 500,
-                    background: "var(--surface-elevated)", color: "#8A8A8A",
-                    border: "1px solid var(--border-subtle)", cursor: "pointer",
+                    background: "var(--bg-input)", color: "var(--text-secondary)",
+                    border: "1px solid var(--border-card)", cursor: "pointer",
                   }
             }
           >
@@ -94,32 +94,32 @@ export function FreedomCalculator({ freedMonthlyPayment, totalMonths }: FreedomC
           exit={{ opacity: 0, scale: 0.98 }}
           transition={{ duration: 0.18, ease: [0.4, 0, 0.2, 1] }}
           style={{
-            background: "var(--surface-elevated)",
+            background: "var(--bg-input)",
             borderRadius: "12px",
-            padding: "28px 20px",
+            padding: "24px 20px",
             textAlign: "center",
           }}
         >
-          <p style={{ fontSize: "48px", lineHeight: 1, marginBottom: "12px" }}>{goal.emoji}</p>
+          <p style={{ fontSize: "44px", lineHeight: 1, marginBottom: "10px" }}>{goal.emoji}</p>
           <p
             style={{
-              fontSize: "40px",
+              fontSize: "36px",
               fontWeight: 800,
               letterSpacing: "-0.03em",
-              color: "#FFFFFF",
+              color: "var(--text-primary)",
               lineHeight: 1,
               fontVariantNumeric: "tabular-nums",
             }}
           >
             {formatCurrency(accumulated)}
           </p>
-          <p style={{ fontSize: "13px", color: "#555555", marginTop: "8px" }}>
+          <p style={{ fontSize: "13px", color: "var(--text-secondary)", marginTop: "8px" }}>
             за {period.label} — это{" "}
-            <span style={{ fontWeight: 600, color: "#8A8A8A" }}>
+            <span style={{ fontWeight: 600, color: "var(--text-primary)" }}>
               {goal.label.toLowerCase()}
             </span>
           </p>
-          <p style={{ fontSize: "11.5px", color: "#555555", marginTop: "4px" }}>{goal.description}</p>
+          <p style={{ fontSize: "11.5px", color: "var(--text-tertiary)", marginTop: "4px" }}>{goal.description}</p>
         </motion.div>
       </AnimatePresence>
 
@@ -135,15 +135,15 @@ export function FreedomCalculator({ freedMonthlyPayment, totalMonths }: FreedomC
                     display: "flex", alignItems: "center", gap: "4px",
                     padding: "6px 16px", borderRadius: "20px",
                     fontSize: "12px", fontWeight: 600,
-                    background: "#B5F562", color: "#0A0A0A",
-                    border: "1px solid #B5F562", cursor: "pointer",
+                    background: "var(--accent-primary)", color: "#FFFFFF",
+                    border: "1px solid var(--accent-primary)", cursor: "pointer",
                   }
                 : {
                     display: "flex", alignItems: "center", gap: "4px",
                     padding: "6px 16px", borderRadius: "20px",
                     fontSize: "12px", fontWeight: 500,
-                    background: "var(--surface-elevated)", color: "#8A8A8A",
-                    border: "1px solid var(--border-subtle)", cursor: "pointer",
+                    background: "var(--bg-input)", color: "var(--text-secondary)",
+                    border: "1px solid var(--border-card)", cursor: "pointer",
                   }
             }
           >
@@ -153,7 +153,7 @@ export function FreedomCalculator({ freedMonthlyPayment, totalMonths }: FreedomC
         ))}
       </div>
 
-      <p style={{ fontSize: "10.5px", color: "#555555" }}>
+      <p style={{ fontSize: "10.5px", color: "var(--text-tertiary)" }}>
         Оценка — если откладывать высвободившийся платёж целиком без учёта инфляции и процентов.
       </p>
     </div>

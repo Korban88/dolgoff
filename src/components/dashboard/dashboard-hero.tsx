@@ -1,93 +1,129 @@
 "use client";
 
 import Link from "next/link";
-import { motion } from "framer-motion";
-import { ArrowRight, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { formatCurrency, formatMonths } from "@/lib/debt-calculator";
-import type { PayoffResult } from "@/lib/debt-calculator";
+import { Sliders, Plus } from "lucide-react";
+import { formatCurrency, formatMonths, type PayoffResult } from "@/lib/debt-calculator";
 
 interface DashboardHeroProps {
   result: PayoffResult;
   payoffDate: Date;
 }
 
-function formatPayoffDateLong(date: Date): string {
-  return date.toLocaleDateString("ru-RU", { month: "long", year: "numeric" });
-}
-
-const fadeUp = {
-  hidden: { opacity: 0, y: 16 },
-  show:   { opacity: 1, y: 0 },
-};
-
 export function DashboardHero({ result, payoffDate }: DashboardHeroProps) {
+  const dateLabel = payoffDate.toLocaleDateString("ru-RU", { month: "long", year: "numeric" });
+
   return (
-    <motion.div
-      initial="hidden"
-      animate="show"
-      variants={{ show: { transition: { staggerChildren: 0.09 } } }}
-      className="relative overflow-hidden rounded-3xl p-7 text-white"
+    <div
+      className="rounded-[16px] animate-fade-in-up"
       style={{
-        background: "linear-gradient(135deg, #6C63FF 0%, #7A72FF 40%, #5B8DEF 100%)",
-        boxShadow: "0 8px 32px rgba(108, 99, 255, 0.28), 0 2px 8px rgba(108, 99, 255, 0.18)",
+        background: `linear-gradient(135deg, rgba(163,230,53,0.05) 0%, rgba(30,64,175,0.08) 100%), var(--surface-card)`,
+        border: "1px solid rgba(163,230,53,0.15)",
+        padding: "32px",
+        boxShadow: "var(--shadow-card)",
+        transition: "box-shadow 0.2s ease, border-color 0.2s ease",
       }}
     >
-      {/* Decorative rings */}
-      <div className="absolute -right-14 -top-14 w-64 h-64 rounded-full border-[32px] border-white/5 pointer-events-none" />
-      <div className="absolute right-8 -bottom-12 w-44 h-44 rounded-full border-[22px] border-white/5 pointer-events-none" />
-      <div className="absolute -left-8 bottom-4 w-24 h-24 rounded-full border-[14px] border-white/4 pointer-events-none" />
-
-      {/* Label */}
-      <motion.p variants={fadeUp} className="text-sm font-medium text-white/65 mb-2 tracking-wide">
-        Закроешь долги к
-      </motion.p>
-
-      {/* Primary date — Space Grotesk */}
-      <motion.p
-        variants={fadeUp}
-        className="font-numeric text-5xl sm:text-6xl font-bold leading-none tracking-tight mb-1.5"
+      {/* Overline */}
+      <p
+        style={{
+          fontSize: "11px",
+          fontWeight: 600,
+          textTransform: "uppercase",
+          letterSpacing: "0.08em",
+          color: "rgba(163,230,53,0.6)",
+          marginBottom: "12px",
+        }}
       >
-        {formatPayoffDateLong(payoffDate)}
-      </motion.p>
+        Дата закрытия всех долгов
+      </p>
 
-      <motion.p variants={fadeUp} className="text-white/55 text-sm mb-6">
+      {/* Hero date */}
+      <p
+        style={{
+          fontSize: "48px",
+          fontWeight: 800,
+          color: "#FFFFFF",
+          letterSpacing: "-0.03em",
+          lineHeight: 1.05,
+          marginBottom: "8px",
+        }}
+      >
+        {dateLabel}
+      </p>
+      <p style={{ fontSize: "14px", color: "#8A8A8A", marginBottom: "28px" }}>
         {formatMonths(result.totalMonths)} при текущем плане
-      </motion.p>
+      </p>
 
-      {/* Overpayment pill */}
-      <motion.div
-        variants={fadeUp}
-        className="inline-flex items-center gap-2.5 bg-white/10 border border-white/18 rounded-2xl px-4 py-2.5 mb-6 backdrop-blur-sm"
-      >
-        <div className="w-2 h-2 rounded-full bg-[#F79009] shadow-[0_0_6px_rgba(247,144,9,0.8)]" />
-        <span className="text-sm font-medium text-white/85">
-          Уйдёт на проценты:{" "}
-          <span className="font-bold text-white font-numeric">
-            {formatCurrency(result.totalInterestPaid)}
-          </span>
-        </span>
-      </motion.div>
+      {/* Metric pills */}
+      <div className="flex flex-wrap gap-3 mb-8">
+        {[
+          { label: "Переплата",       value: formatCurrency(result.totalInterestPaid) },
+          { label: "Всего платежей",  value: formatCurrency(result.totalPaid) },
+        ].map(({ label, value }) => (
+          <div
+            key={label}
+            style={{
+              background: "rgba(255,255,255,0.05)",
+              border: "1px solid rgba(255,255,255,0.08)",
+              borderRadius: "10px",
+              padding: "8px 16px",
+              display: "flex",
+              flexDirection: "column",
+              gap: "2px",
+            }}
+          >
+            <span style={{
+              fontSize: "11px",
+              fontWeight: 500,
+              textTransform: "uppercase",
+              letterSpacing: "0.05em",
+              color: "#555555",
+            }}>
+              {label}
+            </span>
+            <span style={{
+              fontSize: "16px",
+              fontWeight: 700,
+              letterSpacing: "-0.02em",
+              color: "#B5F562",
+              fontVariantNumeric: "tabular-nums",
+            }}>
+              {value}
+            </span>
+          </div>
+        ))}
+      </div>
 
-      {/* CTAs */}
-      <motion.div variants={fadeUp} className="flex flex-wrap gap-3">
+      {/* Actions */}
+      <div className="flex flex-wrap gap-3">
         <Button
-          render={<Link href="/simulator" />}
-          className="bg-white text-[#6C63FF] hover:bg-white/92 font-semibold rounded-xl h-10 px-5 shadow-sm transition-all duration-200 hover:scale-[1.02] hover:shadow-md"
-        >
-          <Zap className="w-3.5 h-3.5 mr-1.5" />
-          Изменить сценарий
-        </Button>
-        <button
-          onClick={() => {
-            document.getElementById("scenario-cards")?.scrollIntoView({ behavior: "smooth" });
+          nativeButton={false} render={<Link href="/simulator" />}
+          className="h-10 px-5 text-[14px] font-semibold transition-all duration-150"
+          style={{
+            background: "#B5F562",
+            color: "#0A0A0A",
+            border: "none",
+            borderRadius: "var(--radius-button)",
           }}
-          className="inline-flex items-center gap-1.5 text-sm font-medium text-white/70 hover:text-white transition-colors"
         >
-          Варианты доплат
-          <ArrowRight className="w-3.5 h-3.5" />
-        </button>
-      </motion.div>
-    </motion.div>
+          <Sliders className="w-4 h-4 mr-2" style={{ strokeWidth: 2 }} />
+          Симулятор
+        </Button>
+        <Button
+          nativeButton={false} render={<Link href="/debts/new" />}
+          className="h-10 px-5 text-[14px] font-semibold transition-all duration-150 hero-outline-btn"
+          style={{
+            background: "transparent",
+            color: "#FFFFFF",
+            border: "1px solid rgba(255,255,255,0.15)",
+            borderRadius: "var(--radius-button)",
+          }}
+        >
+          <Plus className="w-4 h-4 mr-1.5" style={{ strokeWidth: 2 }} />
+          Долг
+        </Button>
+      </div>
+    </div>
   );
 }

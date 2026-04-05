@@ -3,22 +3,13 @@
 import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import {
-  AreaChart,
-  Area,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
+  AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
 } from "recharts";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import {
-  calculatePayoff,
-  formatCurrency,
-  formatMonths,
-  type DebtInput,
-  type Strategy,
+  calculatePayoff, formatCurrency, formatMonths,
+  type DebtInput, type Strategy,
 } from "@/lib/debt-calculator";
 import { Clock, PiggyBank, TrendingDown, Share2, CheckCircle2, ArrowLeft, Zap, CalendarCheck } from "lucide-react";
 import { ShareModal } from "@/components/share-modal";
@@ -31,8 +22,8 @@ interface Props {
 }
 
 const STRATEGIES: { value: Strategy; label: string; desc: string }[] = [
-  { value: "avalanche", label: "Лавина", desc: "Сначала дорогой" },
-  { value: "snowball", label: "Снежный ком", desc: "Сначала маленький" },
+  { value: "avalanche",    label: "Лавина",          desc: "Сначала дорогой" },
+  { value: "snowball",     label: "Снежный ком",     desc: "Сначала маленький" },
   { value: "proportional", label: "Пропорционально", desc: "По доле" },
 ];
 
@@ -53,15 +44,14 @@ export function SimulatorClient({ debts, initialExtra = 0 }: Props) {
   const improved = useMemo(() => calculatePayoff(debts, strategy, calcExtra), [debts, strategy, calcExtra]);
 
   const savedMonths = baseline.totalMonths - improved.totalMonths;
-  const savedMoney = baseline.totalInterestPaid - improved.totalInterestPaid;
-  const hasSavings = calcExtra > 0 && savedMoney > 0;
+  const savedMoney  = baseline.totalInterestPaid - improved.totalInterestPaid;
+  const hasSavings  = calcExtra > 0 && savedMoney > 0;
 
-  const animatedTotalMonths = useAnimatedNumber(improved.totalMonths);
-  const animatedSavedMonths = useAnimatedNumber(savedMonths);
-  const animatedSavedMoney = useAnimatedNumber(Math.round(savedMoney));
+  const animatedTotalMonths  = useAnimatedNumber(improved.totalMonths);
+  const animatedSavedMonths  = useAnimatedNumber(savedMonths);
+  const animatedSavedMoney   = useAnimatedNumber(Math.round(savedMoney));
   const animatedInterestPaid = useAnimatedNumber(Math.round(improved.totalInterestPaid));
 
-  // Chart
   const chartData = useMemo(() => {
     const maxMonth = Math.max(baseline.totalMonths, improved.totalMonths);
     const step = Math.max(1, Math.floor(maxMonth / 36));
@@ -79,7 +69,6 @@ export function SimulatorClient({ debts, initialExtra = 0 }: Props) {
 
   const sliderPercent = (extra / 50000) * 100;
 
-  // Payoff date for improved scenario
   const improvedPayoffDate = useMemo(() => {
     const now = new Date();
     return new Date(now.getFullYear(), now.getMonth() + improved.totalMonths, 1);
@@ -87,34 +76,67 @@ export function SimulatorClient({ debts, initialExtra = 0 }: Props) {
 
   return (
     <>
-      <div className="max-w-3xl mx-auto space-y-6 pb-28 md:pb-8">
+      <div className="max-w-3xl mx-auto pb-28 md:pb-8" style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+
         {/* Header */}
         <div>
           <Link
             href="/dashboard"
-            className="inline-flex items-center gap-1.5 text-sm text-[#667085] hover:text-[#6C63FF] mb-3 transition-colors"
+            className="sim-back-link inline-flex items-center gap-1.5 mb-4"
+            style={{ fontSize: "12px", color: "#555555", textDecoration: "none" }}
           >
-            <ArrowLeft className="w-4 h-4" />
+            <ArrowLeft className="w-3.5 h-3.5" />
             К дашборду
           </Link>
-          <h1 className="text-2xl font-bold text-[#0F172A] tracking-tight">Симулятор «Что если»</h1>
-          <p className="text-sm text-[#667085] mt-0.5">Доплата сверх минимума — и картина меняется</p>
+          <h1 style={{ fontSize: "28px", fontWeight: 700, color: "#FFFFFF", letterSpacing: "-0.02em", lineHeight: 1.1 }}>
+            Симулятор «Что если»
+          </h1>
+          <p style={{ fontSize: "14px", color: "#8A8A8A", marginTop: "6px" }}>
+            Доплата сверх минимума — и картина меняется
+          </p>
         </div>
 
         {/* Slider card */}
-        <div className="bg-white rounded-3xl border border-[#E7ECF3] p-6 shadow-[0_1px_4px_rgba(15,23,42,0.04)]">
+        <div
+          style={{
+            background: "var(--surface-elevated)",
+            border: "1px solid var(--border-card)",
+            borderRadius: "var(--radius-card)",
+            padding: "28px 28px 24px",
+            boxShadow: "var(--shadow-card)",
+          }}
+        >
           {/* Amount display */}
-          <div className="text-center mb-7">
-            <p className="text-xs font-semibold text-[#667085] uppercase tracking-wider mb-2">
+          <div style={{ textAlign: "center", marginBottom: "24px" }}>
+            <p style={{ fontSize: "12px", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em", color: "#8A8A8A", marginBottom: "10px" }}>
               Доплата сверх минимума в месяц
             </p>
-            <p className="text-6xl font-bold tabular-nums tracking-tight" style={{ color: extra > 0 ? "#6C63FF" : "#94a3b8" }}>
+            <p
+              style={{
+                fontSize: "40px",
+                fontWeight: 800,
+                letterSpacing: "-0.03em",
+                lineHeight: 1,
+                color: extra > 0 ? "#B5F562" : "#555555",
+                fontVariantNumeric: "tabular-nums",
+              }}
+            >
               {extra === 0 ? "0 ₽" : formatCurrency(extra)}
             </p>
             {hasSavings && (
-              <div className="inline-flex items-center gap-1.5 mt-3 bg-[#F0FDF8] border border-[#BBF7D0] rounded-full px-3 py-1">
-                <Zap className="w-3.5 h-3.5 text-[#12B76A]" />
-                <span className="text-xs font-semibold text-[#059669]">
+              <div
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "6px",
+                  marginTop: "12px",
+                  background: "rgba(181,245,98,0.15)",
+                  borderRadius: "20px",
+                  padding: "6px 14px",
+                }}
+              >
+                <Zap style={{ width: "14px", height: "14px", color: "#B5F562" }} />
+                <span style={{ fontSize: "13px", fontWeight: 600, color: "#B5F562" }}>
                   экономия {formatCurrency(animatedSavedMoney)}
                 </span>
               </div>
@@ -122,7 +144,7 @@ export function SimulatorClient({ debts, initialExtra = 0 }: Props) {
           </div>
 
           {/* Slider */}
-          <div className="px-1 mb-3">
+          <div style={{ padding: "0 2px", marginBottom: "10px" }}>
             <input
               type="range"
               min={0}
@@ -130,32 +152,56 @@ export function SimulatorClient({ debts, initialExtra = 0 }: Props) {
               step={1000}
               value={extra}
               onChange={(e) => setExtra(Number(e.target.value))}
-              className="w-full appearance-none cursor-pointer outline-none"
+              className="sim-slider w-full"
               style={{
-                background: `linear-gradient(to right, #6C63FF ${sliderPercent}%, #E7ECF3 ${sliderPercent}%)`,
+                background: `linear-gradient(to right, #B5F562 ${sliderPercent}%, #2A2A2A ${sliderPercent}%)`,
               }}
             />
           </div>
-          <div className="flex justify-between text-[10px] text-[#C0C8D8] select-none px-0.5 mb-5">
-            <span>0</span>
-            <span>10к</span>
-            <span>20к</span>
-            <span>30к</span>
-            <span>40к</span>
-            <span>50к ₽</span>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              fontSize: "12px",
+              color: "#8A8A8A",
+              marginBottom: "20px",
+              userSelect: "none",
+              padding: "0 2px",
+            }}
+          >
+            <span>0</span><span>10к</span><span>20к</span><span>30к</span><span>40к</span><span>50к ₽</span>
           </div>
 
           {/* Quick picks */}
-          <div className="flex flex-wrap gap-2">
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
             {QUICK_PICKS.map((v) => (
               <button
                 key={v}
                 onClick={() => setExtra(v)}
-                className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all duration-150 ${
+                className="sim-quick-btn"
+                style={
                   extra === v
-                    ? "bg-[#6C63FF] text-white shadow-sm shadow-[#6C63FF]/25"
-                    : "bg-[#F7F8FC] text-[#667085] hover:bg-[#EEF2FF] hover:text-[#6C63FF]"
-                }`}
+                    ? {
+                        background: "#B5F562",
+                        color: "#0A0A0A",
+                        border: "1px solid #B5F562",
+                        borderRadius: "20px",
+                        padding: "7px 16px",
+                        fontSize: "13px",
+                        fontWeight: 600,
+                        cursor: "pointer",
+                      }
+                    : {
+                        background: "var(--surface-card)",
+                        color: "#FFFFFF",
+                        border: "1px solid var(--border-card)",
+                        borderRadius: "20px",
+                        padding: "7px 16px",
+                        fontSize: "13px",
+                        fontWeight: 500,
+                        cursor: "pointer",
+                      }
+                }
               >
                 +{v.toLocaleString("ru")} ₽
               </button>
@@ -163,7 +209,16 @@ export function SimulatorClient({ debts, initialExtra = 0 }: Props) {
             {extra > 0 && (
               <button
                 onClick={() => setExtra(0)}
-                className="px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-[#F7F8FC] text-[#94a3b8] hover:bg-[#F1F5F9] transition-all duration-150"
+                style={{
+                  background: "transparent",
+                  color: "#FF4D4D",
+                  border: "none",
+                  borderRadius: "20px",
+                  padding: "7px 14px",
+                  fontSize: "13px",
+                  fontWeight: 500,
+                  cursor: "pointer",
+                }}
               >
                 Сбросить
               </button>
@@ -172,103 +227,168 @@ export function SimulatorClient({ debts, initialExtra = 0 }: Props) {
         </div>
 
         {/* Impact cards */}
-        <div className="grid grid-cols-3 gap-3">
-          {/* New term */}
-          <div className="bg-white rounded-2xl border border-[#E7ECF3] p-4 shadow-[0_1px_4px_rgba(15,23,42,0.04)]">
-            <div className="w-8 h-8 rounded-xl bg-[#EEF2FF] flex items-center justify-center mb-3">
-              <Clock className="w-4 h-4 text-[#6C63FF]" />
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "16px", alignItems: "stretch" }}>
+          {/* Term */}
+          <div
+            style={{
+              background: "var(--surface-card)",
+              border: "1px solid var(--border-card)",
+              borderRadius: "16px",
+              padding: "24px",
+              minHeight: "160px",
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "14px" }}>
+              <Clock style={{ width: "16px", height: "16px", color: "#555555", strokeWidth: 1.75 }} />
             </div>
-            <p className="text-[10px] font-semibold text-[#667085] uppercase tracking-wide mb-1">Срок</p>
-            <p className="text-lg font-bold text-[#0F172A] tabular-nums leading-none">
+            <p style={{ fontSize: "12px", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", color: "#8A8A8A", marginBottom: "8px" }}>
+              Срок
+            </p>
+            <p style={{ fontSize: "32px", fontWeight: 800, letterSpacing: "-0.025em", color: "#FFFFFF", lineHeight: 1, fontVariantNumeric: "tabular-nums" }}>
               {formatMonths(animatedTotalMonths)}
             </p>
             {savedMonths > 0 ? (
-              <p className="text-[10px] text-[#12B76A] font-semibold mt-1.5">
+              <p style={{ fontSize: "12px", fontWeight: 600, color: "#4DFF91", marginTop: "8px" }}>
                 −{formatMonths(animatedSavedMonths)}
               </p>
             ) : (
-              <p className="text-[10px] text-[#94a3b8] mt-1.5">добавьте доплату</p>
+              <p style={{ fontSize: "12px", color: "#555555", marginTop: "8px" }}>
+                добавьте доплату
+              </p>
             )}
           </div>
 
           {/* Savings */}
-          <div className={`rounded-2xl border p-4 shadow-[0_1px_4px_rgba(15,23,42,0.04)] transition-colors duration-500 ${
-            hasSavings ? "bg-[#F0FDF8] border-[#BBF7D0]" : "bg-white border-[#E7ECF3]"
-          }`}>
-            <div className={`w-8 h-8 rounded-xl flex items-center justify-center mb-3 transition-colors duration-500 ${
-              hasSavings ? "bg-[#12B76A]/10" : "bg-[#F7F8FC]"
-            }`}>
-              <PiggyBank className={`w-4 h-4 transition-colors duration-500 ${hasSavings ? "text-[#12B76A]" : "text-[#94a3b8]"}`} />
+          <div
+            style={{
+              background: hasSavings ? "rgba(163,230,53,0.03)" : "var(--surface-card)",
+              border: hasSavings ? "1px solid rgba(163,230,53,0.2)" : "1px solid var(--border-card)",
+              borderRadius: "16px",
+              padding: "24px",
+              minHeight: "160px",
+              display: "flex",
+              flexDirection: "column",
+              transition: "border-color 500ms, background 500ms",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "14px" }}>
+              <PiggyBank
+                style={{ width: "16px", height: "16px", strokeWidth: 1.75, color: hasSavings ? "#a3e635" : "#555555", transition: "color 500ms" }}
+              />
             </div>
-            <p className="text-[10px] font-semibold text-[#667085] uppercase tracking-wide mb-1">Экономия</p>
+            <p style={{ fontSize: "12px", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", color: "#8A8A8A", marginBottom: "8px" }}>
+              Экономия
+            </p>
             {hasSavings ? (
               <>
-                <p className="text-lg font-bold text-[#12B76A] tabular-nums leading-none">
+                <p style={{ fontSize: "32px", fontWeight: 800, letterSpacing: "-0.025em", color: "#a3e635", lineHeight: 1, fontVariantNumeric: "tabular-nums" }}>
                   {formatCurrency(animatedSavedMoney)}
                 </p>
-                <p className="text-[10px] text-[#059669] mt-1.5 font-medium">останется у вас</p>
+                <p style={{ fontSize: "12px", color: "#555555", marginTop: "8px" }}>
+                  останется у вас
+                </p>
               </>
             ) : (
               <>
-                <p className="text-lg font-bold text-[#94a3b8] leading-none">—</p>
-                <p className="text-[10px] text-[#94a3b8] mt-1.5">двигайте ползунок</p>
+                <p style={{ fontSize: "32px", fontWeight: 800, color: "#555555", lineHeight: 1 }}>—</p>
+                <p style={{ fontSize: "12px", color: "#555555", marginTop: "8px" }}>
+                  двигайте ползунок
+                </p>
               </>
             )}
           </div>
 
           {/* Interest */}
-          <div className="bg-white rounded-2xl border border-[#E7ECF3] p-4 shadow-[0_1px_4px_rgba(15,23,42,0.04)]">
-            <div className="w-8 h-8 rounded-xl bg-[#FFFBEB] flex items-center justify-center mb-3">
-              <TrendingDown className="w-4 h-4 text-[#F79009]" />
+          <div
+            style={{
+              background: "var(--surface-card)",
+              border: "1px solid var(--border-card)",
+              borderRadius: "16px",
+              padding: "24px",
+              minHeight: "160px",
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "14px" }}>
+              <TrendingDown style={{ width: "16px", height: "16px", color: "#FFA04D", strokeWidth: 1.75 }} />
             </div>
-            <p className="text-[10px] font-semibold text-[#667085] uppercase tracking-wide mb-1">Переплата</p>
-            <p className="text-lg font-bold text-[#D97706] tabular-nums leading-none">
+            <p style={{ fontSize: "12px", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", color: "#8A8A8A", marginBottom: "8px" }}>
+              Переплата
+            </p>
+            <p style={{ fontSize: "32px", fontWeight: 800, letterSpacing: "-0.025em", color: "#FFFFFF", lineHeight: 1, fontVariantNumeric: "tabular-nums" }}>
               {formatCurrency(animatedInterestPaid)}
             </p>
-            <p className="text-[10px] text-[#94a3b8] mt-1.5">по процентам</p>
+            <p style={{ fontSize: "12px", color: "#555555", marginTop: "8px" }}>по процентам</p>
           </div>
         </div>
 
         {/* New payoff date */}
         {hasSavings && (
-          <div className="bg-[#F0FDF8] border border-[#BBF7D0] rounded-2xl px-5 py-4 flex items-center gap-4">
-            <div className="w-10 h-10 rounded-xl bg-[#12B76A]/10 flex items-center justify-center shrink-0">
-              <CalendarCheck className="w-5 h-5 text-[#12B76A]" />
+          <div
+            style={{
+              background: "var(--surface-card)",
+              border: "1px solid var(--border-card)",
+              borderLeft: "3px solid #a3e635",
+              borderRadius: "12px",
+              padding: "20px 24px",
+              display: "flex",
+              alignItems: "center",
+              gap: "16px",
+            }}
+          >
+            <div
+              style={{
+                width: "40px", height: "40px", borderRadius: "10px",
+                background: "rgba(163,230,53,0.1)",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                flexShrink: 0,
+              }}
+            >
+              <CalendarCheck style={{ width: "20px", height: "20px", color: "#a3e635", strokeWidth: 1.75 }} />
             </div>
             <div>
-              <p className="text-xs font-medium text-[#065f46]/70">Новая дата закрытия всех долгов</p>
-              <p className="font-numeric text-xl font-bold text-[#059669] leading-tight">
+              <p style={{ fontSize: "12px", fontWeight: 500, color: "#8A8A8A" }}>
+                Новая дата закрытия всех долгов
+              </p>
+              <p style={{ fontSize: "20px", fontWeight: 700, letterSpacing: "-0.02em", color: "#FFFFFF", lineHeight: 1.2 }}>
                 {improvedPayoffDate.toLocaleDateString("ru-RU", { month: "long", year: "numeric" })}
               </p>
-              <p className="text-xs text-[#12B76A] font-medium mt-0.5">
+              <p style={{ fontSize: "13px", fontWeight: 600, color: "#a3e635", marginTop: "4px" }}>
                 на {formatMonths(animatedSavedMonths)} раньше
               </p>
             </div>
           </div>
         )}
 
-        {/* Life equivalents for saved money */}
+        {/* Life equivalents */}
         {hasSavings && savedMoney > 500 && (
-          <LifeEquivalents
-            amount={savedMoney}
-            label="экономия — это"
-            title="Что значит эта экономия"
-          />
+          <LifeEquivalents amount={savedMoney} label="экономия — это" title="Что значит эта экономия" />
         )}
 
-        {/* Strategy tabs */}
-        <div className="space-y-2">
-          <p className="text-sm font-semibold text-[#0F172A]">Стратегия погашения</p>
+        {/* Strategy selector */}
+        <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+          <p style={{ fontSize: "14px", fontWeight: 600, color: "#FFFFFF" }}>Стратегия погашения</p>
           <Tabs value={strategy} onValueChange={(v) => setStrategy(v as Strategy)}>
-            <TabsList className="bg-[#F7F8FC] border border-[#E7ECF3] rounded-2xl p-1.5 h-auto w-full">
+            <TabsList
+              className="p-1 h-auto w-full rounded-[10px]"
+              style={{ background: "var(--bg-sidebar)", border: "1px solid var(--border-card)" }}
+            >
               {STRATEGIES.map((s) => (
                 <TabsTrigger
                   key={s.value}
                   value={s.value}
-                  className="flex-1 rounded-xl text-xs px-3 py-2 data-[state=active]:bg-white data-[state=active]:text-[#6C63FF] data-[state=active]:shadow-sm transition-all duration-150"
+                  className="flex-1 rounded-[8px] px-3 py-2 text-[12px] transition-all duration-150"
+                  style={
+                    strategy === s.value
+                      ? { background: "#B5F562", color: "#0A0A0A", fontWeight: 700 }
+                      : { color: "#8A8A8A" }
+                  }
                 >
                   <span className="font-semibold">{s.label}</span>
-                  <span className="hidden sm:inline text-[#94a3b8] font-normal text-xs ml-1">
+                  <span className="hidden sm:inline ml-1 text-[11px] opacity-60 font-normal">
                     · {s.desc}
                   </span>
                 </TabsTrigger>
@@ -278,52 +398,67 @@ export function SimulatorClient({ debts, initialExtra = 0 }: Props) {
         </div>
 
         {/* Chart */}
-        <div className="bg-white rounded-2xl border border-[#E7ECF3] p-5 shadow-[0_1px_4px_rgba(15,23,42,0.04)]">
-          <div className="flex items-center justify-between mb-4">
-            <p className="text-sm font-semibold text-[#0F172A]">График</p>
-            <div className="flex items-center gap-3 text-[10px] font-medium">
-              <span className="flex items-center gap-1.5 text-[#94a3b8]">
-                <span className="w-4 h-0.5 bg-[#C0C8D8] inline-block rounded" style={{ borderTop: "2px dashed #C0C8D8", width: 16 }} />
+        <div
+          style={{
+            background: "var(--surface-card)",
+            border: "1px solid var(--border-card)",
+            borderRadius: "var(--radius-card)",
+            padding: "24px",
+            boxShadow: "var(--shadow-card)",
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "16px" }}>
+            <p style={{ fontSize: "14px", fontWeight: 600, color: "#FFFFFF" }}>График</p>
+            <div style={{ display: "flex", alignItems: "center", gap: "16px", fontSize: "11px", fontWeight: 500 }}>
+              <span style={{ display: "flex", alignItems: "center", gap: "6px", color: "#555555" }}>
+                <span style={{ width: 16, borderTop: "2px dashed rgba(255,255,255,0.2)", display: "inline-block" }} />
                 Минимум
               </span>
               {calcExtra > 0 && (
-                <span className="flex items-center gap-1.5 text-[#6C63FF]">
-                  <span className="w-4 h-0.5 bg-[#6C63FF] inline-block rounded" />
+                <span style={{ display: "flex", alignItems: "center", gap: "6px", color: "#a3e635" }}>
+                  <span style={{ width: 16, height: 2, background: "#a3e635", display: "inline-block", borderRadius: 1 }} />
                   +{formatCurrency(calcExtra)}/мес
                 </span>
               )}
             </div>
           </div>
-          <ResponsiveContainer width="100%" height={220}>
+          <ResponsiveContainer width="100%" height={200}>
             <AreaChart data={chartData} margin={{ top: 4, right: 4, left: 0, bottom: 0 }}>
               <defs>
                 <linearGradient id="simBaseline" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#6C63FF" stopOpacity={0.07} />
-                  <stop offset="95%" stopColor="#6C63FF" stopOpacity={0} />
+                  <stop offset="5%"  stopColor="rgba(255,255,255,0.2)" stopOpacity={0.08} />
+                  <stop offset="95%" stopColor="rgba(255,255,255,0.2)" stopOpacity={0} />
                 </linearGradient>
                 <linearGradient id="simImproved" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#12B76A" stopOpacity={0.12} />
-                  <stop offset="95%" stopColor="#12B76A" stopOpacity={0} />
+                  <stop offset="0%"  stopColor="#a3e635" stopOpacity={0.15} />
+                  <stop offset="100%" stopColor="#a3e635" stopOpacity={0.01} />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" vertical={false} />
+              <CartesianGrid horizontal vertical={false} strokeDasharray="4 4" stroke="#2A2A2A" />
               <XAxis
                 dataKey="month"
-                tick={{ fontSize: 10, fill: "#94a3b8" }}
+                tick={{ fontSize: 11, fill: "#8A8A8A", fontWeight: 500 }}
                 axisLine={false}
                 tickLine={false}
                 tickFormatter={(v) => `${v}м`}
                 interval="preserveStartEnd"
               />
               <YAxis
-                tick={{ fontSize: 10, fill: "#94a3b8" }}
+                tick={{ fontSize: 11, fill: "#8A8A8A" }}
                 tickFormatter={(v) => `${Math.round(Number(v) / 1000)}к`}
                 axisLine={false}
                 tickLine={false}
                 width={32}
               />
               <Tooltip
-                contentStyle={{ borderRadius: "12px", border: "1px solid #E7ECF3", fontSize: 12 }}
+                contentStyle={{
+                  borderRadius: "10px",
+                  border: "1px solid var(--border-card)",
+                  fontSize: 12,
+                  background: "var(--surface-elevated)",
+                  color: "#FFFFFF",
+                  boxShadow: "var(--shadow-elevated)",
+                }}
                 formatter={(value, name) => [
                   formatCurrency(Number(value)),
                   name === "baseline" ? "Только минимум" : "С доплатой",
@@ -333,9 +468,9 @@ export function SimulatorClient({ debts, initialExtra = 0 }: Props) {
               <Area
                 type="monotone"
                 dataKey="baseline"
-                stroke="#C0C8D8"
-                strokeWidth={1.5}
-                strokeDasharray="4 3"
+                stroke="rgba(255,255,255,0.2)"
+                strokeWidth={2}
+                strokeDasharray="6 4"
                 fill="url(#simBaseline)"
                 dot={false}
                 name="baseline"
@@ -344,8 +479,8 @@ export function SimulatorClient({ debts, initialExtra = 0 }: Props) {
                 <Area
                   type="monotone"
                   dataKey="improved"
-                  stroke="#6C63FF"
-                  strokeWidth={2}
+                  stroke="#a3e635"
+                  strokeWidth={2.5}
                   fill="url(#simImproved)"
                   dot={false}
                   name="improved"
@@ -357,20 +492,39 @@ export function SimulatorClient({ debts, initialExtra = 0 }: Props) {
 
         {/* Payoff order */}
         {improved.debtClosures.length > 0 && (
-          <div className="space-y-2">
-            <p className="text-sm font-semibold text-[#0F172A]">Порядок закрытия</p>
-            <div className="space-y-2">
+          <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+            <p style={{ fontSize: "14px", fontWeight: 600, color: "#FFFFFF" }}>Порядок закрытия</p>
+            <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
               {improved.debtClosures.map((c, i) => (
                 <div
                   key={c.id}
-                  className="flex items-center gap-3.5 bg-white border border-[#E7ECF3] rounded-2xl px-4 py-3 shadow-[0_1px_4px_rgba(15,23,42,0.04)]"
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "14px",
+                    background: "var(--surface-card)",
+                    border: "1px solid var(--border-card)",
+                    borderRadius: "12px",
+                    padding: "14px 16px",
+                  }}
                 >
-                  <div className="w-7 h-7 rounded-xl bg-[#EEF2FF] text-[#6C63FF] text-xs font-bold flex items-center justify-center shrink-0">
+                  <div
+                    style={{
+                      width: "28px", height: "28px", borderRadius: "8px",
+                      background: "rgba(163,230,53,0.1)",
+                      color: "#a3e635",
+                      fontSize: "12px", fontWeight: 700,
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                      flexShrink: 0,
+                    }}
+                  >
                     {i + 1}
                   </div>
-                  <span className="flex-1 text-sm font-medium text-[#0F172A]">{c.creditorName}</span>
-                  <div className="flex items-center gap-1.5 text-xs text-[#667085]">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-[#12B76A]" />
+                  <span style={{ flex: 1, fontSize: "13px", fontWeight: 500, color: "#FFFFFF" }}>
+                    {c.creditorName}
+                  </span>
+                  <div style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "11px", color: "#8A8A8A" }}>
+                    <CheckCircle2 style={{ width: "14px", height: "14px", color: "#4DFF91" }} />
                     <span>месяц {c.closedAtMonth}</span>
                   </div>
                 </div>
@@ -379,7 +533,7 @@ export function SimulatorClient({ debts, initialExtra = 0 }: Props) {
           </div>
         )}
 
-        <p className="text-xs text-[#94a3b8]">
+        <p style={{ fontSize: "10.5px", color: "#555555" }}>
           Расчёт носит информационный характер и не является финансовой консультацией.
         </p>
       </div>
@@ -387,18 +541,32 @@ export function SimulatorClient({ debts, initialExtra = 0 }: Props) {
       {/* Sticky mobile CTA */}
       {hasSavings && (
         <div className="md:hidden fixed bottom-[64px] left-0 right-0 px-4 z-20 pointer-events-none">
-          <div className="bg-white border border-[#E7ECF3] rounded-2xl shadow-xl px-4 py-3 flex items-center justify-between pointer-events-auto">
+          <div
+            style={{
+              background: "var(--surface-card)",
+              border: "1px solid var(--border-card)",
+              borderRadius: "16px",
+              padding: "12px 16px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              boxShadow: "0 8px 32px rgba(0,0,0,0.6)",
+            }}
+            className="pointer-events-auto"
+          >
             <div>
-              <p className="text-[10px] text-[#94a3b8] font-medium">Потенциальная экономия</p>
-              <p className="text-lg font-bold text-[#12B76A] tabular-nums">
+              <p style={{ fontSize: "10.5px", fontWeight: 500, color: "#8A8A8A" }}>
+                Потенциальная экономия
+              </p>
+              <p style={{ fontSize: "18px", fontWeight: 700, letterSpacing: "-0.02em", color: "#a3e635" }}>
                 {formatCurrency(animatedSavedMoney)}
               </p>
             </div>
             <Button
               onClick={() => setShareOpen(true)}
-              className="bg-[#6C63FF] hover:bg-[#5B54E8] text-white rounded-xl text-sm font-semibold shadow-sm shadow-[#6C63FF]/25 transition-all duration-200"
+              style={{ background: "#B5F562", color: "#0A0A0A", borderRadius: "10px", fontSize: "13px", fontWeight: 700 }}
             >
-              <Share2 className="w-3.5 h-3.5 mr-1.5" />
+              <Share2 style={{ width: "14px", height: "14px", marginRight: "6px" }} />
               Поделиться
             </Button>
           </div>

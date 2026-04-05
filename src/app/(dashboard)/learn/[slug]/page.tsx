@@ -175,7 +175,11 @@ function renderContent(content: string) {
   return paragraphs.map((para, i) => {
     if (para.startsWith("**") && para.endsWith("**")) {
       return (
-        <h3 key={i} className="text-sm font-bold text-[#0F172A] mt-5 mb-2">
+        <h3
+          key={i}
+          className="text-[14px] font-bold mt-6 mb-2"
+          style={{ color: "var(--text-primary)" }}
+        >
           {para.replace(/\*\*/g, "")}
         </h3>
       );
@@ -183,10 +187,14 @@ function renderContent(content: string) {
     // Replace inline **bold** spans
     const parts = para.split(/(\*\*[^*]+\*\*)/g);
     return (
-      <p key={i} className="text-sm text-[#374151] leading-[1.75] mb-3">
+      <p
+        key={i}
+        className="text-[13px] leading-[1.75] mb-3"
+        style={{ color: "var(--text-secondary)" }}
+      >
         {parts.map((part, j) =>
           part.startsWith("**") ? (
-            <strong key={j} className="font-semibold text-[#0F172A]">
+            <strong key={j} className="font-semibold" style={{ color: "var(--text-primary)" }}>
               {part.replace(/\*\*/g, "")}
             </strong>
           ) : (
@@ -211,39 +219,59 @@ export default function LearnArticlePage({
       {/* Back */}
       <Link
         href="/learn"
-        className="inline-flex items-center gap-1.5 text-sm text-[#667085] hover:text-[#6C63FF] transition-colors"
+        className="inline-flex items-center gap-1.5 text-[12px] font-medium transition-colors"
+        style={{ color: "var(--text-tertiary)" }}
       >
-        <ArrowLeft className="w-4 h-4" />
+        <ArrowLeft className="w-3.5 h-3.5" />
         Все материалы
       </Link>
 
       {/* Header */}
       <div className="space-y-3">
         <div className="flex items-center gap-2">
-          <span className="text-[10px] font-bold text-[#6C63FF] bg-[#EEF2FF] px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+          <span
+            className="badge-pill text-[9px] font-bold uppercase tracking-[0.08em]"
+            style={{
+              background: "var(--accent-primary-light)",
+              color: "var(--accent-primary)",
+              border: "1px solid rgba(108,92,231,0.20)",
+            }}
+          >
             {article.tag}
           </span>
-          <div className="flex items-center gap-1.5 text-[10px] text-[#94a3b8]">
+          <div
+            className="flex items-center gap-1.5 text-[10.5px]"
+            style={{ color: "var(--text-tertiary)" }}
+          >
             <Clock className="w-3 h-3" />
             {article.readTime}
           </div>
         </div>
-        <h1 className="text-2xl font-bold text-[#0F172A] leading-snug tracking-tight">
+        <h1
+          className="text-[22px] font-bold leading-snug tracking-tight"
+          style={{ color: "var(--text-primary)" }}
+        >
           {article.title}
         </h1>
       </div>
 
       {/* Divider */}
-      <div className="h-px bg-[#E7ECF3]" />
+      <div className="h-px" style={{ background: "var(--border-light)" }} />
 
       {/* Content */}
       <article className="prose-none">{renderContent(article.content)}</article>
 
       {/* Footer disclaimer */}
-      <div className="bg-[#F7F8FC] border border-[#E7ECF3] rounded-2xl px-5 py-4 mt-6">
+      <div
+        className="rounded-[14px] px-5 py-4 mt-2"
+        style={{
+          background: "var(--bg-input)",
+          border: "1px solid var(--border-light)",
+        }}
+      >
         <div className="flex items-start gap-3">
-          <BookOpen className="w-4 h-4 text-[#667085] shrink-0 mt-0.5" />
-          <p className="text-xs text-[#667085] leading-relaxed">
+          <BookOpen className="w-4 h-4 shrink-0 mt-0.5" style={{ color: "var(--text-tertiary)" }} />
+          <p className="text-[12px] leading-relaxed" style={{ color: "var(--text-tertiary)" }}>
             Этот материал носит образовательный характер. Он объясняет механику — не даёт советов.
             Реальные условия зависят от вашего договора с кредитором.
           </p>
@@ -251,16 +279,23 @@ export default function LearnArticlePage({
       </div>
 
       {/* CTA to simulator */}
-      <div className="bg-[#EEF2FF] border border-[#C7D2FE] rounded-2xl px-5 py-4">
-        <p className="text-sm font-semibold text-[#0F172A] mb-1">
+      <div
+        className="rounded-[14px] px-5 py-4"
+        style={{
+          background: "var(--accent-primary-light)",
+          border: "1px solid rgba(108,92,231,0.15)",
+        }}
+      >
+        <p className="text-[13px] font-semibold mb-1" style={{ color: "var(--text-primary)" }}>
           Посмотреть, как это работает на ваших данных
         </p>
-        <p className="text-xs text-[#667085] mb-3">
+        <p className="text-[12px] mb-3" style={{ color: "var(--text-secondary)" }}>
           Симулятор показывает реальные числа для ваших кредитов.
         </p>
         <Link
           href="/simulator"
-          className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#6C63FF] hover:underline underline-offset-2 transition-colors"
+          className="inline-flex items-center gap-1.5 text-[13px] font-semibold transition-colors"
+          style={{ color: "var(--accent-primary)" }}
         >
           Открыть симулятор <ArrowLeft className="w-3.5 h-3.5 rotate-180" />
         </Link>

@@ -5,7 +5,6 @@ import {
   ArrowRight,
   CheckCircle2,
   Shield,
-  TrendingDown,
   Calculator,
   ListTodo,
   Sliders,
@@ -14,25 +13,44 @@ import {
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-white flex flex-col">
+    <div className="min-h-screen flex flex-col" style={{ background: "var(--bg-page)" }}>
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-[#E7ECF3] px-4 py-3.5">
+      <header
+        className="sticky top-0 z-50 px-4 py-3.5"
+        style={{
+          background: "rgba(248,249,251,0.90)",
+          backdropFilter: "blur(12px)",
+          borderBottom: "1px solid var(--border-light)",
+        }}
+      >
         <div className="max-w-5xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <Image src="/logo-icon.svg" alt="ДолгOFF" width={28} height={28} priority />
-            <span className="text-[17px] font-bold text-[#0F172A] tracking-tight">ДолгOFF</span>
+            <div
+              className="w-7 h-7 rounded-[8px] flex items-center justify-center"
+              style={{ background: "var(--accent-primary)" }}
+            >
+              <span className="text-white font-bold text-[12px]">Д</span>
+            </div>
+            <span
+              className="text-[17px] font-bold tracking-tight"
+              style={{ color: "var(--text-primary)" }}
+            >
+              ДолгOFF
+            </span>
           </div>
           <div className="flex gap-2">
             <Button
-              render={<Link href="/login" />}
+              nativeButton={false} render={<Link href="/login" />}
               variant="ghost"
-              className="text-[#667085] hover:text-[#0F172A] rounded-xl text-sm"
+              className="rounded-[10px] text-[13px]"
+              style={{ color: "var(--text-secondary)" }}
             >
               Войти
             </Button>
             <Button
-              render={<Link href="/register" />}
-              className="bg-[#6C63FF] hover:bg-[#5B54E8] text-white rounded-xl px-5 h-9 text-sm font-semibold shadow-sm shadow-[#6C63FF]/25 transition-all duration-200 hover:scale-[1.02]"
+              nativeButton={false} render={<Link href="/register" />}
+              className="rounded-[10px] px-5 h-9 text-[13px] font-semibold transition-all duration-200"
+              style={{ background: "var(--accent-primary)", color: "#FFFFFF" }}
             >
               Начать
             </Button>
@@ -41,24 +59,37 @@ export default function LandingPage() {
       </header>
 
       {/* Hero */}
-      <section className="relative overflow-hidden bg-[#F7F8FC] px-4 py-24 sm:py-32">
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute -top-40 -right-40 w-[500px] h-[500px] rounded-full bg-[#6C63FF]/5 blur-3xl" />
-          <div className="absolute top-32 -left-32 w-72 h-72 rounded-full bg-[#5B8DEF]/6 blur-2xl" />
-        </div>
-        <div className="relative max-w-3xl mx-auto text-center space-y-8">
+      <section className="px-4 py-24 sm:py-32">
+        <div className="max-w-3xl mx-auto text-center space-y-8">
           {/* Badge */}
-          <div className="inline-flex items-center gap-2 bg-white border border-[#E7ECF3] text-[#667085] text-xs font-semibold px-4 py-1.5 rounded-full shadow-sm">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#12B76A] animate-pulse" />
+          <div
+            className="inline-flex items-center gap-2 text-[12px] font-semibold px-4 py-1.5 rounded-full"
+            style={{
+              background: "var(--accent-primary-light)",
+              border: "1px solid rgba(108,92,231,0.20)",
+              color: "var(--accent-primary)",
+              boxShadow: "var(--shadow-card)",
+            }}
+          >
+            <span
+              className="w-1.5 h-1.5 rounded-full animate-pulse"
+              style={{ background: "var(--accent-primary)" }}
+            />
             Только математика, никаких советов
           </div>
 
           {/* Headline */}
-          <h1 className="text-4xl md:text-5xl lg:text-[3.5rem] font-bold text-[#0F172A] leading-[1.12] tracking-tight">
+          <h1
+            className="text-[42px] md:text-[54px] font-bold leading-[1.08] tracking-tight"
+            style={{ color: "var(--text-primary)" }}
+          >
             Узнайте, когда вы<br />
-            <span className="text-[#6C63FF]">выйдете из долгов</span>
+            <span style={{ color: "var(--accent-primary)" }}>выйдете из долгов</span>
           </h1>
-          <p className="text-lg text-[#667085] max-w-xl mx-auto leading-relaxed">
+          <p
+            className="text-[16px] max-w-xl mx-auto leading-relaxed"
+            style={{ color: "var(--text-secondary)" }}
+          >
             Добавьте кредиты — и получите точный срок погашения, размер переплаты
             и сценарии, которые реально меняют картину.
           </p>
@@ -66,26 +97,35 @@ export default function LandingPage() {
           {/* CTAs */}
           <div className="flex flex-col sm:flex-row gap-3 justify-center pt-1">
             <Button
-              render={<Link href="/register" />}
-              className="bg-[#6C63FF] hover:bg-[#5B54E8] text-white rounded-xl px-8 h-12 text-base font-semibold shadow-lg shadow-[#6C63FF]/25 transition-all duration-200 hover:scale-[1.02]"
+              nativeButton={false} render={<Link href="/register" />}
+              className="rounded-[12px] px-8 h-12 text-[15px] font-semibold transition-all duration-200"
+              style={{ background: "var(--accent-primary)", color: "#FFFFFF", boxShadow: "0 4px 16px rgba(108,92,231,0.35)" }}
             >
               Посчитать бесплатно
               <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
             <Button
-              render={<Link href="/login" />}
+              nativeButton={false} render={<Link href="/login" />}
               variant="outline"
-              className="border-[#E7ECF3] text-[#667085] rounded-xl h-12 text-base hover:bg-[#F7F8FC]"
+              className="rounded-[12px] h-12 text-[15px]"
+              style={{
+                border: "1px solid var(--border-default)",
+                background: "var(--bg-surface)",
+                color: "var(--text-secondary)",
+              }}
             >
               Уже есть аккаунт
             </Button>
           </div>
 
           {/* Trust chips */}
-          <div className="flex flex-wrap gap-5 justify-center pt-1 text-sm text-[#667085]">
+          <div
+            className="flex flex-wrap gap-5 justify-center pt-1 text-[13px]"
+            style={{ color: "var(--text-secondary)" }}
+          >
             {["Без данных карт", "Бесплатно", "Данные только у вас"].map((item) => (
               <div key={item} className="flex items-center gap-1.5">
-                <CheckCircle2 className="w-4 h-4 text-[#12B76A]" />
+                <CheckCircle2 className="w-4 h-4" style={{ color: "var(--color-success)" }} />
                 {item}
               </div>
             ))}
@@ -94,40 +134,102 @@ export default function LandingPage() {
       </section>
 
       {/* Product preview */}
-      <section className="px-4 py-16 bg-white">
+      <section
+        className="px-4 py-16"
+        style={{
+          background: "var(--bg-surface)",
+          borderTop: "1px solid var(--border-light)",
+          borderBottom: "1px solid var(--border-light)",
+        }}
+      >
         <div className="max-w-3xl mx-auto">
-          <p className="text-xs font-semibold text-[#94a3b8] uppercase tracking-widest text-center mb-8">
+          <p
+            className="text-[10.5px] font-semibold uppercase tracking-[0.08em] text-center mb-8"
+            style={{ color: "var(--text-tertiary)" }}
+          >
             Так выглядит ваш дашборд
           </p>
-          <div className="bg-[#F7F8FC] rounded-3xl p-6 sm:p-8 border border-[#E7ECF3] shadow-sm">
-            {/* Hero card mock */}
-            <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#6C63FF] via-[#7C73FF] to-[#5B8DEF] p-6 text-white mb-4">
-              <div className="absolute -right-8 -top-8 w-40 h-40 rounded-full border-[24px] border-white/5 pointer-events-none" />
-              <p className="text-sm text-white/70 mb-1">Закроешь долги к</p>
-              <p className="text-4xl font-bold tracking-tight mb-1.5">январь 2029</p>
-              <p className="text-white/60 text-sm mb-4">4 года 2 мес. при текущем плане</p>
-              <div className="inline-flex items-center gap-2 bg-white/10 border border-white/15 rounded-xl px-3 py-1.5">
-                <div className="w-1.5 h-1.5 rounded-full bg-[#F79009]" />
-                <span className="text-sm text-white/90">Уйдёт на проценты: <strong>218 400 ₽</strong></span>
+          <div
+            className="rounded-[20px] p-6 sm:p-8"
+            style={{ background: "var(--bg-page)", border: "1px solid var(--border-light)" }}
+          >
+            {/* Hero card mock — purple gradient */}
+            <div
+              className="relative overflow-hidden rounded-[18px] p-6 mb-4"
+              style={{
+                background: "linear-gradient(135deg, #6C5CE7 0%, #8B7CF7 55%, #A78BFA 100%)",
+                boxShadow: "0 8px 32px rgba(108,92,231,0.30)",
+              }}
+            >
+              <p
+                className="text-[10.5px] font-semibold uppercase tracking-[0.08em] mb-1"
+                style={{ color: "rgba(255,255,255,0.55)" }}
+              >
+                Закроешь долги к
+              </p>
+              <p
+                className="font-bold tabular-nums mb-1.5"
+                style={{ fontSize: "36px", letterSpacing: "-0.03em", color: "#FFFFFF" }}
+              >
+                январь 2029
+              </p>
+              <p className="text-[13px] mb-4" style={{ color: "rgba(255,255,255,0.55)" }}>
+                4 года 2 мес. при текущем плане
+              </p>
+              <div
+                className="inline-flex items-center gap-2 rounded-[12px] px-3 py-1.5"
+                style={{ background: "rgba(255,255,255,0.15)", backdropFilter: "blur(8px)" }}
+              >
+                <span className="text-[13px]" style={{ color: "rgba(255,255,255,0.80)" }}>
+                  Переплата: <strong className="text-white">218 400 ₽</strong>
+                </span>
               </div>
             </div>
             {/* Scenario cards mock */}
             <div className="grid grid-cols-3 gap-3">
-              <div className="bg-white rounded-xl p-3 border border-[#E7ECF3]">
-                <p className="text-[10px] text-[#6C63FF] font-semibold mb-1.5">+2 000 ₽/мес</p>
-                <p className="text-sm font-bold text-[#0F172A]">−8 мес.</p>
-                <p className="text-[10px] text-[#12B76A]">экономия 31к ₽</p>
+              <div
+                className="rounded-[14px] p-3"
+                style={{ background: "var(--bg-surface)", border: "1px solid var(--border-light)" }}
+              >
+                <p className="text-[10px] font-semibold mb-1.5" style={{ color: "var(--text-tertiary)" }}>
+                  +2 000 ₽/мес
+                </p>
+                <p className="text-[13px] font-bold" style={{ color: "var(--text-primary)" }}>−8 мес.</p>
+                <p className="text-[10px]" style={{ color: "var(--color-success)" }}>экономия 31к ₽</p>
               </div>
-              <div className="bg-[#6C63FF] rounded-xl p-3 shadow-lg shadow-[#6C63FF]/25 relative">
-                <span className="absolute -top-2 left-2 text-[8px] font-bold bg-[#12B76A] text-white px-1.5 py-0.5 rounded-full uppercase tracking-wide">Лучший старт</span>
-                <p className="text-[10px] text-white/70 font-semibold mb-1.5">+5 000 ₽/мес</p>
-                <p className="text-sm font-bold text-white">−1 год 3 мес.</p>
-                <p className="text-[10px] text-white/75">экономия 47 200 ₽</p>
+              <div
+                className="rounded-[14px] p-3 relative"
+                style={{
+                  background: "var(--accent-primary)",
+                  boxShadow: "0 4px 16px rgba(108,92,231,0.35)",
+                }}
+              >
+                <span
+                  className="absolute -top-2 left-2 text-[8px] font-bold px-1.5 py-0.5 rounded-full uppercase tracking-wide"
+                  style={{ background: "#10B981", color: "#FFFFFF" }}
+                >
+                  Лучший старт
+                </span>
+                <p
+                  className="text-[10px] font-semibold mb-1.5"
+                  style={{ color: "rgba(255,255,255,0.60)" }}
+                >
+                  +5 000 ₽/мес
+                </p>
+                <p className="text-[13px] font-bold text-white">−1 год 3 мес.</p>
+                <p className="text-[10px]" style={{ color: "rgba(255,255,255,0.75)" }}>
+                  экономия 47 200 ₽
+                </p>
               </div>
-              <div className="bg-white rounded-xl p-3 border border-[#E7ECF3]">
-                <p className="text-[10px] text-[#6C63FF] font-semibold mb-1.5">+10 000 ₽/мес</p>
-                <p className="text-sm font-bold text-[#0F172A]">−2 года</p>
-                <p className="text-[10px] text-[#12B76A]">экономия 88к ₽</p>
+              <div
+                className="rounded-[14px] p-3"
+                style={{ background: "var(--bg-surface)", border: "1px solid var(--border-light)" }}
+              >
+                <p className="text-[10px] font-semibold mb-1.5" style={{ color: "var(--text-tertiary)" }}>
+                  +10 000 ₽/мес
+                </p>
+                <p className="text-[13px] font-bold" style={{ color: "var(--text-primary)" }}>−2 года</p>
+                <p className="text-[10px]" style={{ color: "var(--color-success)" }}>экономия 88к ₽</p>
               </div>
             </div>
           </div>
@@ -135,49 +237,79 @@ export default function LandingPage() {
       </section>
 
       {/* How it works */}
-      <section className="px-4 py-20 bg-[#F7F8FC]">
+      <section className="px-4 py-20" style={{ background: "var(--bg-page)" }}>
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-14">
-            <h2 className="text-3xl font-bold text-[#0F172A] tracking-tight">Три шага до ясности</h2>
-            <p className="text-[#667085] mt-3">Без сложностей и лишних вопросов</p>
+            <h2
+              className="text-[30px] font-bold tracking-tight"
+              style={{ color: "var(--text-primary)" }}
+            >
+              Три шага до ясности
+            </h2>
+            <p className="mt-3 text-[14px]" style={{ color: "var(--text-tertiary)" }}>
+              Без сложностей и лишних вопросов
+            </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {[
               {
                 icon: ListTodo,
                 step: "01",
                 title: "Добавьте долги",
                 desc: "Банк, остаток, ставка, минимальный платёж — за пару минут",
-                accent: "#6C63FF",
-                bg: "#EEF2FF",
+                color: "var(--accent-primary)",
+                bg: "var(--accent-primary-light)",
               },
               {
                 icon: Calculator,
                 step: "02",
-                title: "Увидьте картину",
+                title: "Увидите картину",
                 desc: "Дата выхода, переплата и стоимость текущего плана — сразу",
-                accent: "#F79009",
-                bg: "#FFFBEB",
+                color: "var(--color-success)",
+                bg: "var(--color-success-light)",
               },
               {
                 icon: Sliders,
                 step: "03",
                 title: "Проверьте сценарии",
                 desc: "Двигайте ползунок и видите эффект от доплаты мгновенно",
-                accent: "#12B76A",
-                bg: "#F0FDF8",
+                color: "var(--color-warning)",
+                bg: "rgba(245,158,11,0.08)",
               },
-            ].map(({ icon: Icon, step, title, desc, accent, bg }) => (
-              <div key={step} className="bg-white rounded-2xl border border-[#E7ECF3] p-6 shadow-[0_1px_4px_rgba(15,23,42,0.04)] text-center space-y-3">
-                <p className="text-[10px] font-bold tracking-widest" style={{ color: accent }}>{step}</p>
+            ].map(({ icon: Icon, step, title, desc, color, bg }) => (
+              <div
+                key={step}
+                className="rounded-[18px] p-6 text-center space-y-3"
+                style={{
+                  background: "var(--bg-surface)",
+                  border: "1px solid var(--border-light)",
+                  boxShadow: "var(--shadow-card)",
+                }}
+              >
+                <p
+                  className="text-[10.5px] font-bold tracking-[0.10em] uppercase"
+                  style={{ color: "var(--text-tertiary)" }}
+                >
+                  {step}
+                </p>
                 <div
-                  className="w-12 h-12 rounded-2xl flex items-center justify-center mx-auto"
+                  className="w-12 h-12 rounded-[14px] flex items-center justify-center mx-auto"
                   style={{ background: bg }}
                 >
-                  <Icon className="w-6 h-6" style={{ color: accent }} />
+                  <Icon className="w-6 h-6" style={{ color }} />
                 </div>
-                <h3 className="font-bold text-[#0F172A]">{title}</h3>
-                <p className="text-sm text-[#667085] leading-relaxed">{desc}</p>
+                <h3
+                  className="font-bold text-[15px]"
+                  style={{ color: "var(--text-primary)" }}
+                >
+                  {title}
+                </h3>
+                <p
+                  className="text-[13px] leading-relaxed"
+                  style={{ color: "var(--text-secondary)" }}
+                >
+                  {desc}
+                </p>
               </div>
             ))}
           </div>
@@ -185,62 +317,162 @@ export default function LandingPage() {
       </section>
 
       {/* Before / After example */}
-      <section className="px-4 py-20 bg-white">
+      <section
+        className="px-4 py-20"
+        style={{
+          background: "var(--bg-surface)",
+          borderTop: "1px solid var(--border-light)",
+          borderBottom: "1px solid var(--border-light)",
+        }}
+      >
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-10">
-            <h2 className="text-3xl font-bold text-[#0F172A] tracking-tight">Было → Стало</h2>
-            <p className="text-[#667085] mt-3">Анонимный пример — три кредита, общий остаток 450 000 ₽</p>
+            <h2
+              className="text-[30px] font-bold tracking-tight"
+              style={{ color: "var(--text-primary)" }}
+            >
+              Было → Стало
+            </h2>
+            <p className="mt-3 text-[13px]" style={{ color: "var(--text-tertiary)" }}>
+              Анонимный пример — три кредита, общий остаток 450 000 ₽
+            </p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {/* Before */}
-            <div className="rounded-2xl border border-[#E7ECF3] bg-[#F7F8FC] p-6">
-              <p className="text-xs font-semibold text-[#667085] uppercase tracking-wide mb-4">Без изменений</p>
+            <div
+              className="rounded-[18px] p-6"
+              style={{
+                background: "var(--bg-page)",
+                border: "1px solid var(--border-light)",
+              }}
+            >
+              <p
+                className="text-[10.5px] font-semibold uppercase tracking-[0.08em] mb-4"
+                style={{ color: "var(--text-tertiary)" }}
+              >
+                Без изменений
+              </p>
               <div className="space-y-3">
                 <div>
-                  <p className="text-xs text-[#94a3b8]">Срок погашения</p>
-                  <p className="text-2xl font-bold text-[#0F172A]">6 лет 4 мес.</p>
+                  <p className="text-[11px]" style={{ color: "var(--text-tertiary)" }}>
+                    Срок погашения
+                  </p>
+                  <p
+                    className="text-[26px] font-bold tabular-nums"
+                    style={{ letterSpacing: "-0.03em", color: "var(--text-primary)" }}
+                  >
+                    6 лет 4 мес.
+                  </p>
                 </div>
                 <div>
-                  <p className="text-xs text-[#94a3b8]">Переплата</p>
-                  <p className="text-2xl font-bold text-[#D97706]">210 000 ₽</p>
+                  <p className="text-[11px]" style={{ color: "var(--text-tertiary)" }}>
+                    Переплата
+                  </p>
+                  <p
+                    className="text-[26px] font-bold tabular-nums"
+                    style={{ letterSpacing: "-0.03em", color: "var(--color-warning)" }}
+                  >
+                    210 000 ₽
+                  </p>
                 </div>
               </div>
             </div>
             {/* After */}
-            <div className="rounded-2xl border border-[#BBF7D0] bg-[#F0FDF8] p-6">
+            <div
+              className="rounded-[18px] p-6"
+              style={{
+                background: "var(--color-success-light)",
+                border: "1px solid rgba(16,185,129,0.25)",
+              }}
+            >
               <div className="flex items-center gap-2 mb-4">
-                <p className="text-xs font-semibold text-[#065f46] uppercase tracking-wide">+5 000 ₽/мес</p>
-                <span className="text-[10px] font-bold bg-[#12B76A] text-white px-2 py-0.5 rounded-full">Симулятор</span>
+                <p
+                  className="text-[10.5px] font-semibold uppercase tracking-[0.08em]"
+                  style={{ color: "var(--color-success)" }}
+                >
+                  +5 000 ₽/мес
+                </p>
+                <span
+                  className="badge-pill text-[10px] font-bold"
+                  style={{ background: "var(--color-success)", color: "#FFFFFF" }}
+                >
+                  Симулятор
+                </span>
               </div>
               <div className="space-y-3">
                 <div>
-                  <p className="text-xs text-[#065f46]/60">Новый срок</p>
-                  <p className="text-2xl font-bold text-[#059669]">4 года 3 мес.</p>
-                  <p className="text-xs text-[#12B76A] font-semibold">−2 года 1 мес.</p>
+                  <p className="text-[11px]" style={{ color: "rgba(5,150,105,0.60)" }}>
+                    Новый срок
+                  </p>
+                  <p
+                    className="text-[26px] font-bold tabular-nums"
+                    style={{ letterSpacing: "-0.03em", color: "var(--color-success)" }}
+                  >
+                    4 года 3 мес.
+                  </p>
+                  <p
+                    className="text-[11px] font-semibold"
+                    style={{ color: "var(--color-success)" }}
+                  >
+                    −2 года 1 мес.
+                  </p>
                 </div>
                 <div>
-                  <p className="text-xs text-[#065f46]/60">Переплата</p>
-                  <p className="text-2xl font-bold text-[#059669]">163 000 ₽</p>
-                  <p className="text-xs text-[#12B76A] font-semibold">экономия 47 000 ₽</p>
+                  <p className="text-[11px]" style={{ color: "rgba(5,150,105,0.60)" }}>
+                    Переплата
+                  </p>
+                  <p
+                    className="text-[26px] font-bold tabular-nums"
+                    style={{ letterSpacing: "-0.03em", color: "var(--color-success)" }}
+                  >
+                    163 000 ₽
+                  </p>
+                  <p
+                    className="text-[11px] font-semibold"
+                    style={{ color: "var(--color-success)" }}
+                  >
+                    экономия 47 000 ₽
+                  </p>
                 </div>
               </div>
             </div>
           </div>
-          <p className="text-xs text-center text-[#94a3b8] mt-4">
+          <p
+            className="text-[11px] text-center mt-4"
+            style={{ color: "var(--text-tertiary)" }}
+          >
             Пример расчёта. Результат зависит от условий договора.
           </p>
         </div>
       </section>
 
       {/* Trust block */}
-      <section className="px-4 py-20 bg-[#F7F8FC]">
+      <section className="px-4 py-20" style={{ background: "var(--bg-page)" }}>
         <div className="max-w-3xl mx-auto">
-          <div className="bg-white rounded-3xl p-10 text-center space-y-6 border border-[#E7ECF3] shadow-sm">
-            <div className="w-14 h-14 mx-auto rounded-2xl bg-[#EEF2FF] flex items-center justify-center">
-              <Shield className="w-7 h-7 text-[#6C63FF]" />
+          <div
+            className="rounded-[20px] p-10 text-center space-y-6"
+            style={{
+              background: "var(--bg-surface)",
+              border: "1px solid var(--border-light)",
+              boxShadow: "var(--shadow-card)",
+            }}
+          >
+            <div
+              className="w-14 h-14 mx-auto rounded-[14px] flex items-center justify-center"
+              style={{ background: "var(--accent-primary-light)" }}
+            >
+              <Shield className="w-7 h-7" style={{ color: "var(--accent-primary)" }} />
             </div>
-            <h2 className="text-2xl font-bold text-[#0F172A]">Только математика</h2>
-            <p className="text-[#667085] leading-relaxed max-w-md mx-auto">
+            <h2
+              className="text-[24px] font-bold tracking-tight"
+              style={{ color: "var(--text-primary)" }}
+            >
+              Только математика
+            </h2>
+            <p
+              className="leading-relaxed max-w-md mx-auto text-[14px]"
+              style={{ color: "var(--text-secondary)" }}
+            >
               Мы не храним данные карт и счетов. Не даём финансовых советов.
               ДолгOFF — это инструмент расчёта, который помогает вам считать, а не решает за вас.
             </p>
@@ -250,8 +482,12 @@ export default function LandingPage() {
                 { icon: Calculator, text: "Только расчёты" },
                 { icon: CheckCircle2, text: "Без советов" },
               ].map(({ icon: Icon, text }) => (
-                <div key={text} className="flex items-center gap-2 text-sm text-[#667085]">
-                  <Icon className="w-4 h-4 text-[#12B76A]" />
+                <div
+                  key={text}
+                  className="flex items-center gap-2 text-[13px]"
+                  style={{ color: "var(--text-secondary)" }}
+                >
+                  <Icon className="w-4 h-4" style={{ color: "var(--color-success)" }} />
                   {text}
                 </div>
               ))}
@@ -261,48 +497,81 @@ export default function LandingPage() {
       </section>
 
       {/* Final CTA */}
-      <section className="px-4 py-20 bg-white">
+      <section
+        className="px-4 py-20"
+        style={{ background: "var(--bg-surface)", borderTop: "1px solid var(--border-light)" }}
+      >
         <div className="max-w-2xl mx-auto text-center space-y-6">
-          <div className="w-14 h-14 mx-auto rounded-2xl bg-[#EEF2FF] flex items-center justify-center">
-            <Zap className="w-7 h-7 text-[#6C63FF]" />
+          <div
+            className="w-14 h-14 mx-auto rounded-[14px] flex items-center justify-center"
+            style={{ background: "var(--accent-primary-light)" }}
+          >
+            <Zap className="w-7 h-7" style={{ color: "var(--accent-primary)" }} />
           </div>
-          <h2 className="text-3xl font-bold text-[#0F172A] tracking-tight">
+          <h2
+            className="text-[30px] font-bold tracking-tight"
+            style={{ color: "var(--text-primary)" }}
+          >
             Узнайте свой план прямо сейчас
           </h2>
-          <p className="text-[#667085]">
+          <p className="text-[14px]" style={{ color: "var(--text-secondary)" }}>
             Это займёт 5 минут. Никаких карт и подписок.
           </p>
           <Button
-            render={<Link href="/register" />}
-            className="bg-[#6C63FF] hover:bg-[#5B54E8] text-white rounded-xl px-10 h-12 text-base font-semibold shadow-lg shadow-[#6C63FF]/25 transition-all duration-200 hover:scale-[1.02]"
+            nativeButton={false} render={<Link href="/register" />}
+            className="rounded-[12px] px-10 h-12 text-[15px] font-semibold transition-all duration-200"
+            style={{
+              background: "var(--accent-primary)",
+              color: "#FFFFFF",
+              boxShadow: "0 4px 16px rgba(108,92,231,0.35)",
+            }}
           >
             Посчитать бесплатно
             <ArrowRight className="w-4 h-4 ml-2" />
           </Button>
-          <p className="text-xs text-[#94a3b8]">
+          <p className="text-[11px]" style={{ color: "var(--text-tertiary)" }}>
             Бесплатно · Без карты · Данные только у вас
           </p>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-[#E7ECF3] px-4 py-8 bg-[#F7F8FC]">
+      <footer
+        className="px-4 py-8"
+        style={{ borderTop: "1px solid var(--border-light)", background: "var(--bg-page)" }}
+      >
         <div className="max-w-5xl mx-auto">
-          <div className="flex flex-wrap gap-4 justify-between items-center text-sm text-[#667085] mb-4">
+          <div
+            className="flex flex-wrap gap-4 justify-between items-center text-[13px] mb-4"
+            style={{ color: "var(--text-tertiary)" }}
+          >
             <div className="flex items-center gap-2">
-              <Image src="/logo-icon.svg" alt="ДолгOFF" width={20} height={20} />
-              <span className="font-bold text-[#0F172A]">ДолгOFF</span>
+              <div
+                className="w-6 h-6 rounded-[7px] flex items-center justify-center"
+                style={{ background: "var(--accent-primary)" }}
+              >
+                <span className="text-white font-bold text-[11px]">Д</span>
+              </div>
+              <span className="font-bold" style={{ color: "var(--text-primary)" }}>ДолгOFF</span>
             </div>
             <div className="flex gap-5">
-              <Link href="/privacy" className="hover:text-[#0F172A] transition-colors">
+              <Link
+                href="/privacy"
+                className="transition-colors hover:opacity-80"
+                style={{ color: "var(--text-tertiary)" }}
+              >
                 Конфиденциальность
               </Link>
-              <Link href="/terms" className="hover:text-[#0F172A] transition-colors">
+              <Link
+                href="/terms"
+                className="transition-colors hover:opacity-80"
+                style={{ color: "var(--text-tertiary)" }}
+              >
                 Условия
               </Link>
             </div>
           </div>
-          <p className="text-xs text-[#94a3b8]">
+          <p className="text-[11px]" style={{ color: "var(--text-tertiary)" }}>
             ДолгOFF является информационным инструментом и не оказывает финансовых консультационных услуг.
             Все расчёты носят ориентировочный характер. Реальные условия зависят от договора с кредитором.
           </p>

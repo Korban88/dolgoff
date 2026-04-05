@@ -1,19 +1,12 @@
 import type { Metadata } from "next";
-import { Manrope, Space_Grotesk } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 
-const manrope = Manrope({
-  variable: "--font-manrope",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin", "cyrillic"],
   display: "swap",
   weight: ["400", "500", "600", "700", "800"],
-});
-
-const spaceGrotesk = Space_Grotesk({
-  variable: "--font-space-grotesk",
-  subsets: ["latin"],
-  display: "swap",
-  weight: ["400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -24,14 +17,28 @@ export const metadata: Metadata = {
   },
 };
 
+// Inline script to apply theme before first paint — prevents flash
+function ThemeScript() {
+  return (
+    <script
+      dangerouslySetInnerHTML={{
+        __html: `try{var t=localStorage.getItem('dolgoff-theme')||'dark';document.documentElement.setAttribute('data-theme',t);}catch(e){}`,
+      }}
+    />
+  );
+}
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ru" className={`${manrope.variable} ${spaceGrotesk.variable} h-full`}>
-      <body className="min-h-full flex flex-col font-sans antialiased">{children}</body>
+    <html lang="ru" className={`${inter.variable} h-full`} data-theme="dark" suppressHydrationWarning>
+      <head>
+        <ThemeScript />
+      </head>
+      <body className={`${inter.variable} min-h-full flex flex-col font-sans antialiased`}>{children}</body>
     </html>
   );
 }

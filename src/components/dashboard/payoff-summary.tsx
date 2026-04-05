@@ -1,6 +1,7 @@
 "use client";
 
 import { MetricCard } from "@/components/ui/metric-card";
+import { DollarSign, Calendar, Percent, CreditCard } from "lucide-react";
 import type { DebtInput } from "@/lib/debt-calculator";
 
 interface PayoffSummaryProps {
@@ -10,48 +11,42 @@ interface PayoffSummaryProps {
 
 export function PayoffSummary({ debts, totalMinPayment }: PayoffSummaryProps) {
   const totalBalance = debts.reduce((sum, d) => sum + d.currentBalance, 0);
-
-  // Weighted average rate (by balance)
   const weightedRate =
     totalBalance > 0
       ? debts.reduce((sum, d) => sum + d.interestRate * d.currentBalance, 0) / totalBalance
       : 0;
 
-  // Nearest closure date
-  const nearestDebt = debts.reduce(
-    (min, d) => (d.minimumPayment > (min?.minimumPayment ?? 0) ? d : min),
-    debts[0]
-  );
-
   return (
-    <div className="grid grid-cols-2 gap-3">
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 animate-fade-in-up stagger-2">
       <MetricCard
         value={totalBalance}
         label="Общий долг"
         format="currency"
-        variant="default"
+        icon={DollarSign}
       />
       <MetricCard
         value={totalMinPayment}
-        label="Платежи в месяц"
+        label="Платёж в месяц"
         format="currency"
-        variant="default"
+        icon={Calendar}
       />
       <MetricCard
         value={weightedRate}
         label="Взвеш. ставка"
         format="percent"
-        variant="default"
         animate={false}
         sublabel="средняя по балансу"
+        icon={Percent}
+        variant="warning"
       />
       <MetricCard
         value={debts.length}
-        label="Кредитов"
         format="number"
-        variant="default"
+        label="Кредитов"
         animate={false}
-        sublabel={nearestDebt ? `макс. платёж: ${nearestDebt.creditorName}` : undefined}
+        sublabel="активных"
+        icon={CreditCard}
+        variant="accent"
       />
     </div>
   );

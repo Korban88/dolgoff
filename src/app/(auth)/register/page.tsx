@@ -51,11 +51,27 @@ export default function RegisterPage() {
     router.push("/login?registered=1");
   }
 
+  const inputStyle = { borderColor: "var(--border-default)" };
+
   return (
-    <div className="bg-white rounded-2xl shadow-lg border border-[#e2e8f0] p-8 space-y-6">
+    <div
+      className="rounded-[18px] p-8 space-y-6"
+      style={{
+        background: "var(--bg-surface)",
+        border: "1px solid var(--border-light)",
+        boxShadow: "var(--shadow-card)",
+      }}
+    >
       <div className="space-y-1">
-        <h1 className="text-2xl font-bold text-[#0f172a] tracking-tight">Создать аккаунт</h1>
-        <p className="text-[#64748b] text-sm">Начните путь к финансовой ясности</p>
+        <h1
+          className="text-[22px] font-bold tracking-tight"
+          style={{ color: "var(--text-primary)" }}
+        >
+          Создать аккаунт
+        </h1>
+        <p className="text-[13px]" style={{ color: "var(--text-tertiary)" }}>
+          Начните путь к финансовой ясности
+        </p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -66,7 +82,13 @@ export default function RegisterPage() {
         )}
 
         <div className="space-y-1.5">
-          <Label htmlFor="email" className="text-[#0f172a] text-sm font-medium">Email</Label>
+          <Label
+            htmlFor="email"
+            className="text-[13px] font-medium"
+            style={{ color: "var(--text-primary)" }}
+          >
+            Email
+          </Label>
           <Input
             id="email"
             type="email"
@@ -75,12 +97,19 @@ export default function RegisterPage() {
             onChange={(e) => setEmail(e.target.value)}
             required
             autoComplete="email"
-            className="h-11 rounded-xl border-[#e2e8f0] focus:border-[#3b82f6] bg-white"
+            className="h-11 rounded-[10px]"
+            style={inputStyle}
           />
         </div>
 
         <div className="space-y-1.5">
-          <Label htmlFor="password" className="text-[#0f172a] text-sm font-medium">Пароль</Label>
+          <Label
+            htmlFor="password"
+            className="text-[13px] font-medium"
+            style={{ color: "var(--text-primary)" }}
+          >
+            Пароль
+          </Label>
           <Input
             id="password"
             type="password"
@@ -90,12 +119,19 @@ export default function RegisterPage() {
             required
             minLength={8}
             autoComplete="new-password"
-            className="h-11 rounded-xl border-[#e2e8f0] focus:border-[#3b82f6] bg-white"
+            className="h-11 rounded-[10px]"
+            style={inputStyle}
           />
         </div>
 
         <div className="space-y-1.5">
-          <Label htmlFor="confirmPassword" className="text-[#0f172a] text-sm font-medium">Повторите пароль</Label>
+          <Label
+            htmlFor="confirmPassword"
+            className="text-[13px] font-medium"
+            style={{ color: "var(--text-primary)" }}
+          >
+            Повторите пароль
+          </Label>
           <Input
             id="confirmPassword"
             type="password"
@@ -104,7 +140,8 @@ export default function RegisterPage() {
             onChange={(e) => setConfirmPassword(e.target.value)}
             required
             autoComplete="new-password"
-            className="h-11 rounded-xl border-[#e2e8f0] focus:border-[#3b82f6] bg-white"
+            className="h-11 rounded-[10px]"
+            style={inputStyle}
           />
         </div>
 
@@ -114,11 +151,21 @@ export default function RegisterPage() {
             type="checkbox"
             checked={consentPD}
             onChange={(e) => setConsentPD(e.target.checked)}
-            className="mt-0.5 h-4 w-4 rounded border-[#e2e8f0] accent-[#1e40af]"
+            className="mt-0.5 h-4 w-4 rounded"
+            style={{ accentColor: "var(--accent-primary)", borderColor: "var(--border-default)" }}
           />
-          <Label htmlFor="consentPD" className="text-sm text-[#64748b] font-normal leading-snug cursor-pointer">
+          <Label
+            htmlFor="consentPD"
+            className="text-[13px] font-normal leading-snug cursor-pointer"
+            style={{ color: "var(--text-secondary)" }}
+          >
             Я даю согласие на обработку персональных данных в соответствии с{" "}
-            <Link href="/privacy" className="text-[#1e40af] hover:underline" target="_blank">
+            <Link
+              href="/privacy"
+              className="hover:underline underline-offset-2 font-medium"
+              style={{ color: "var(--accent-primary)" }}
+              target="_blank"
+            >
               Политикой конфиденциальности
             </Link>
           </Label>
@@ -126,15 +173,20 @@ export default function RegisterPage() {
 
         <Button
           type="submit"
-          className="w-full h-11 rounded-xl bg-[#1e40af] hover:bg-[#1d3a9e] text-white font-semibold text-base transition-all duration-200"
+          className="w-full h-11 rounded-[10px] font-semibold text-[14px] transition-all duration-200"
+          style={{ background: "var(--accent-primary)", color: "#FFFFFF" }}
           disabled={loading || !consentPD}
         >
           {loading ? "Создание аккаунта..." : "Зарегистрироваться"}
         </Button>
 
-        <p className="text-center text-sm text-[#64748b]">
+        <p className="text-center text-[13px]" style={{ color: "var(--text-secondary)" }}>
           Уже есть аккаунт?{" "}
-          <Link href="/login" className="text-[#1e40af] hover:text-[#1d3a9e] font-semibold transition-colors">
+          <Link
+            href="/login"
+            className="font-semibold transition-colors"
+            style={{ color: "var(--accent-primary)" }}
+          >
             Войти
           </Link>
         </p>

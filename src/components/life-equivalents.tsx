@@ -12,7 +12,6 @@ import { formatCurrency } from "@/lib/debt-calculator";
 
 interface LifeEquivalentsProps {
   amount: number;
-  /** Optional: second amount to show delta framing (e.g. "saved X") */
   label?: string;
   title?: string;
 }
@@ -20,17 +19,38 @@ interface LifeEquivalentsProps {
 export function LifeEquivalents({
   amount,
   label = "это",
-  title = "Понять сумму проще",
+  title = "Ощутить сумму",
 }: LifeEquivalentsProps) {
   const [selected, setSelected] = useState<EquivalentItem>(EQUIVALENT_ITEMS[0]);
   const count = calculateEquivalent(amount, selected);
 
   return (
-    <div className="rounded-2xl bg-white border border-[#E7ECF3] shadow-card p-5 space-y-4">
+    <div
+      style={{
+        background: "var(--surface-card)",
+        border: "1px solid var(--border-card)",
+        borderRadius: "var(--radius-card)",
+        padding: "24px",
+        boxShadow: "var(--shadow-card)",
+        display: "flex",
+        flexDirection: "column",
+        gap: "16px",
+      }}
+    >
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <p className="text-sm font-semibold text-[#0F172A]">{title}</p>
-        <span className="text-xs font-medium text-[#667085] bg-[#F7F8FC] border border-[#E7ECF3] px-2.5 py-1 rounded-full">
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <p style={{ fontSize: "14px", fontWeight: 600, color: "#FFFFFF" }}>{title}</p>
+        <span
+          style={{
+            fontSize: "13px",
+            fontWeight: 500,
+            color: "#8A8A8A",
+            background: "var(--surface-elevated)",
+            border: "1px solid var(--border-card)",
+            borderRadius: "20px",
+            padding: "4px 12px",
+          }}
+        >
           {formatCurrency(amount)}
         </span>
       </div>
@@ -39,37 +59,67 @@ export function LifeEquivalents({
       <AnimatePresence mode="wait">
         <motion.div
           key={selected.id}
-          initial={{ opacity: 0, y: 8 }}
+          initial={{ opacity: 0, y: 6 }}
           animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -8 }}
-          transition={{ duration: 0.22, ease: [0.4, 0, 0.2, 1] }}
-          className="bg-[#F7F8FC] rounded-xl px-5 py-4 text-center"
+          exit={{ opacity: 0, y: -6 }}
+          transition={{ duration: 0.20, ease: [0.4, 0, 0.2, 1] }}
+          style={{
+            background: "var(--surface-elevated)",
+            borderRadius: "12px",
+            padding: "28px 20px",
+            textAlign: "center",
+          }}
         >
-          <p className="text-4xl mb-2">{selected.emoji}</p>
-          <p className="text-3xl font-bold tabular-nums text-[#0F172A] font-numeric leading-none">
+          <p style={{ fontSize: "48px", lineHeight: 1, marginBottom: "12px" }}>{selected.emoji}</p>
+          <p
+            style={{
+              fontSize: "40px",
+              fontWeight: 800,
+              letterSpacing: "-0.03em",
+              color: "#FFFFFF",
+              lineHeight: 1,
+              fontVariantNumeric: "tabular-nums",
+            }}
+          >
             {formatEquivalentCount(count)}
           </p>
-          <p className="text-sm text-[#667085] mt-1.5">
+          <p style={{ fontSize: "13px", color: "#555555", marginTop: "8px" }}>
             {label}{" "}
-            <span className="font-medium text-[#0F172A]">
-              {formatEquivalentCount(count)} × {selected.label}
+            <span style={{ fontWeight: 600, color: "#8A8A8A" }}>
+              {selected.label}
             </span>
           </p>
-          <p className="text-xs text-[#94a3b8] mt-1">{selected.caption}</p>
+          <p style={{ fontSize: "11.5px", color: "#555555", marginTop: "4px" }}>{selected.caption}</p>
         </motion.div>
       </AnimatePresence>
 
       {/* Selector chips */}
-      <div className="flex flex-wrap gap-1.5">
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
         {EQUIVALENT_ITEMS.map((item) => (
           <button
             key={item.id}
             onClick={() => setSelected(item)}
-            className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium transition-all duration-150 ${
+            style={
               selected.id === item.id
-                ? "bg-[#6C63FF] text-white shadow-sm"
-                : "bg-[#F7F8FC] text-[#667085] border border-[#E7ECF3] hover:bg-[#EEF2FF] hover:text-[#6C63FF] hover:border-[#6C63FF]/30"
-            }`}
+                ? {
+                    display: "flex", alignItems: "center", gap: "4px",
+                    padding: "6px 16px", borderRadius: "20px",
+                    fontSize: "12px", fontWeight: 600,
+                    background: "#B5F562",
+                    color: "#0A0A0A",
+                    border: "1px solid #B5F562",
+                    cursor: "pointer",
+                  }
+                : {
+                    display: "flex", alignItems: "center", gap: "4px",
+                    padding: "6px 16px", borderRadius: "20px",
+                    fontSize: "12px", fontWeight: 500,
+                    background: "var(--surface-elevated)",
+                    color: "#8A8A8A",
+                    border: "1px solid var(--border-subtle)",
+                    cursor: "pointer",
+                  }
+            }
           >
             <span>{item.emoji}</span>
             {item.label}

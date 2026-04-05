@@ -6,34 +6,35 @@ import { Button } from "@/components/ui/button";
 import { Plus, Pencil, CheckCircle2 } from "lucide-react";
 import { formatCurrency } from "@/lib/debt-calculator";
 
-// Left-border classes — explicit for Tailwind JIT
-const RATE_BORDER: Record<string, string> = {
-  critical: "border-l-orange-400",
-  high:     "border-l-amber-400",
-  medium:   "border-l-[#6C63FF]",
-  low:      "border-l-emerald-400",
-};
-
-function getBorder(rate: number) {
-  if (rate > 30) return RATE_BORDER.critical;
-  if (rate > 20) return RATE_BORDER.high;
-  if (rate > 10) return RATE_BORDER.medium;
-  return RATE_BORDER.low;
+function getRateColor(rate: number): string {
+  if (rate > 30) return "#FF4D4D";
+  if (rate > 20) return "#FFA04D";
+  if (rate > 10) return "#4D9FFF";
+  return "#4DFF91";
 }
 
-// Smart neutral tag logic — no advisory language
+function getProgressGradient(rate: number): string {
+  if (rate > 30) return "linear-gradient(90deg, #FF4D4D, #FFA04D)";
+  if (rate > 20) return "linear-gradient(90deg, #FFA04D, #B5F562)";
+  return "linear-gradient(90deg, #B5F562, #4DFF91)";
+}
+
+function getTagBg(color: string): string {
+  if (color === "#FF4D4D") return "rgba(255,77,77,0.12)";
+  if (color === "#4DFF91") return "rgba(77,255,145,0.10)";
+  if (color === "#4D9FFF") return "rgba(77,159,255,0.12)";
+  return "rgba(255,255,255,0.08)";
+}
+
 function getSmartTag(
   debt: { id: string; interestRate: number; currentBalance: number; minimumPayment: number },
   allDebts: typeof debt[]
 ): { label: string; color: string } | null {
-  const maxRate = Math.max(...allDebts.map((d) => d.interestRate));
-  const minBalance = Math.min(...allDebts.map((d) => d.currentBalance));
-  const maxPayment = Math.max(...allDebts.map((d) => d.minimumPayment));
-
   if (allDebts.length < 2) return null;
-  if (debt.interestRate === maxRate) return { label: "Высокая ставка", color: "bg-orange-50 text-orange-600 border-orange-100" };
-  if (debt.currentBalance === minBalance) return { label: "Наименьший остаток", color: "bg-emerald-50 text-emerald-600 border-emerald-100" };
-  if (debt.minimumPayment === maxPayment) return { label: "Наибольший платёж", color: "bg-blue-50 text-blue-600 border-blue-100" };
+  const maxRate    = Math.max(...allDebts.map((d) => d.interestRate));
+  const minBalance = Math.min(...allDebts.map((d) => d.currentBalance));
+  if (debt.interestRate === maxRate)      return { label: "Высокая ставка",     color: "#FF4D4D" };
+  if (debt.currentBalance === minBalance) return { label: "Наименьший остаток", color: "#4DFF91" };
   return null;
 }
 
@@ -49,10 +50,9 @@ export default async function DebtsPage() {
   const activeDebts = debts.filter((d) => !d.isClosed);
   const closedDebts = debts.filter((d) => d.isClosed);
 
-  const totalBalance = activeDebts.reduce((s, d) => s + d.currentBalance, 0);
+  const totalBalance    = activeDebts.reduce((s, d) => s + d.currentBalance, 0);
   const totalMinPayment = activeDebts.reduce((s, d) => s + d.minimumPayment, 0);
-  // Weighted average rate by balance
-  const weightedRate =
+  const weightedRate    =
     totalBalance > 0
       ? activeDebts.reduce((s, d) => s + d.interestRate * d.currentBalance, 0) / totalBalance
       : 0;
@@ -65,181 +65,250 @@ export default async function DebtsPage() {
   }));
 
   return (
-    <div className="max-w-3xl mx-auto space-y-7">
-      {/* Header */}
-      <div className="flex items-center justify-between">
+    <div className="max-w-3xl mx-auto" style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+
+      {/* ── Header ── */}
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <div>
-          <h1 className="text-xl font-bold text-[#0F172A] tracking-tight">Мои долги</h1>
-          <p className="text-sm text-[#667085] mt-0.5">Все кредиты в одном месте</p>
+          <h1 style={{ fontSize: "22px", fontWeight: 700, letterSpacing: "-0.02em", color: "#FFFFFF" }}>
+            Мои долги
+          </h1>
+          <p style={{ fontSize: "13px", color: "#555555", marginTop: "2px" }}>
+            Все кредиты в одном месте
+          </p>
         </div>
         <Button
-          render={<Link href="/debts/new" />}
-          className="bg-[#6C63FF] hover:bg-[#5B54E8] text-white rounded-xl shadow-sm shadow-[#6C63FF]/20 h-9 px-4 text-sm font-semibold transition-all duration-200 hover:scale-[1.02]"
+          nativeButton={false} render={<Link href="/debts/new" />}
+          className="h-9 px-4 text-[13px] font-semibold transition-all duration-200"
+          style={{ background: "#B5F562", color: "#0A0A0A", borderRadius: "12px" }}
         >
-          <Plus className="w-4 h-4 mr-1" />+ Новый долг
+          <Plus className="w-3.5 h-3.5 mr-1" />+ Новый долг
         </Button>
       </div>
 
-      {/* Summary strip */}
+      {/* ── Summary strip ── */}
       {activeDebts.length > 0 && (
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div
+          style={{
+            background: "var(--surface-base)",
+            borderRadius: "var(--radius-button)",
+            padding: "16px 24px",
+            display: "grid",
+            gridTemplateColumns: "repeat(2, 1fr)",
+            gap: "16px 32px",
+          }}
+          className="sm:grid-cols-4"
+        >
           {[
-            { label: "Кредитов", value: String(activeDebts.length), sub: "активных" },
-            { label: "Общий остаток", value: formatCurrency(totalBalance), sub: "" },
-            { label: "Взвеш. ставка", value: `${weightedRate.toFixed(1)}%`, sub: "годовых" },
-            { label: "Платёж / мес", value: formatCurrency(totalMinPayment), sub: "минимум" },
+            { label: "Кредитов",      value: String(activeDebts.length),          sub: "активных" },
+            { label: "Общий остаток", value: formatCurrency(totalBalance),          sub: "" },
+            { label: "Взвеш. ставка", value: `${weightedRate.toFixed(1)}%`,        sub: "годовых" },
+            { label: "Платёж / мес",  value: formatCurrency(totalMinPayment),       sub: "минимум" },
           ].map(({ label, value, sub }) => (
-            <div
-              key={label}
-              className="bg-white rounded-2xl border border-[#E7ECF3] shadow-card p-4"
-            >
-              <p className="text-[10px] font-semibold text-[#94a3b8] uppercase tracking-wider mb-1">
+            <div key={label}>
+              <p style={{ fontSize: "11px", fontWeight: 500, textTransform: "uppercase", letterSpacing: "0.05em", color: "#8A8A8A", marginBottom: "4px" }}>
                 {label}
               </p>
-              <p className="font-numeric text-lg font-bold text-[#0F172A] leading-tight">{value}</p>
-              {sub && <p className="text-[10px] text-[#94a3b8] mt-0.5">{sub}</p>}
+              <p style={{ fontSize: "24px", fontWeight: 700, letterSpacing: "-0.025em", color: "#FFFFFF", lineHeight: 1 }}>
+                {value}
+              </p>
+              {sub && (
+                <p style={{ fontSize: "11px", color: "#555555", marginTop: "2px" }}>{sub}</p>
+              )}
             </div>
           ))}
         </div>
       )}
 
-      {/* Empty state */}
+      {/* ── Empty state ── */}
       {activeDebts.length === 0 && (
-        <div className="bg-white rounded-3xl border border-[#E7ECF3] shadow-card py-16 text-center">
-          <div className="w-14 h-14 rounded-2xl bg-[#EEF2FF] flex items-center justify-center mx-auto mb-5">
-            <Plus className="w-7 h-7 text-[#6C63FF]" />
+        <div
+          style={{
+            background: "var(--surface-card)",
+            border: "1px solid var(--border-card)",
+            borderRadius: "16px",
+            padding: "64px 24px",
+            textAlign: "center",
+          }}
+        >
+          <div
+            style={{
+              width: "56px", height: "56px", borderRadius: "14px",
+              background: "var(--surface-elevated)",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              margin: "0 auto 20px",
+            }}
+          >
+            <Plus style={{ width: "28px", height: "28px", color: "#555555" }} />
           </div>
-          <p className="font-semibold text-[#0F172A] mb-2">Долгов пока нет</p>
-          <p className="text-sm text-[#667085] mb-6 max-w-xs mx-auto">
+          <p style={{ fontWeight: 600, color: "#FFFFFF", marginBottom: "8px" }}>Долгов пока нет</p>
+          <p style={{ fontSize: "13px", color: "#8A8A8A", maxWidth: "280px", margin: "0 auto 24px" }}>
             Добавьте первый кредит — и увидите полную картину и план погашения
           </p>
           <Button
-            render={<Link href="/debts/new" />}
-            className="bg-[#6C63FF] hover:bg-[#5B54E8] text-white rounded-xl shadow-sm shadow-[#6C63FF]/20 px-6 h-10 font-semibold"
+            nativeButton={false} render={<Link href="/debts/new" />}
+            className="px-6 h-10 font-semibold text-[13px]"
+            style={{ background: "#B5F562", color: "#0A0A0A", borderRadius: "12px" }}
           >
             Добавить первый долг
           </Button>
         </div>
       )}
 
-      {/* Active debts */}
+      {/* ── Active debts ── */}
       {activeDebts.length > 0 && (
-        <div className="space-y-2.5">
-          <p className="text-[10px] font-bold text-[#94a3b8] uppercase tracking-widest px-1">
+        <div>
+          <p style={{ fontSize: "10.5px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.10em", color: "#555555", marginBottom: "12px", paddingLeft: "2px" }}>
             Активные · {activeDebts.length}
           </p>
-          {activeDebts.map((debt) => {
-            const tag = getSmartTag(
-              { id: debt.id, interestRate: debt.interestRate, currentBalance: debt.currentBalance, minimumPayment: debt.minimumPayment },
-              activeForTags
-            );
-            const progressPercent =
-              debt.originalBalance &&
-              debt.originalBalance > 0 &&
-              debt.originalBalance >= debt.currentBalance
-                ? Math.max(0, Math.round((1 - debt.currentBalance / debt.originalBalance) * 100))
-                : null;
 
-            return (
-              <div
-                key={debt.id}
-                className={`bg-white border border-[#E7ECF3] border-l-4 ${getBorder(debt.interestRate)} rounded-2xl shadow-card hover:shadow-card-hover transition-shadow duration-200 px-5 py-4`}
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex-1 min-w-0">
-                    {/* Name + tags */}
-                    <div className="flex items-center flex-wrap gap-2 mb-2">
-                      <span className="font-semibold text-[#0F172A] text-sm truncate">
-                        {debt.creditorName}
-                      </span>
-                      <span className="text-[10px] font-medium text-[#667085] bg-[#F7F8FC] border border-[#E7ECF3] px-2 py-0.5 rounded-full">
-                        {debt.debtType}
-                      </span>
-                      {tag && (
-                        <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${tag.color}`}>
-                          {tag.label}
+          <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+            {activeDebts.map((debt) => {
+              const tag = getSmartTag(
+                { id: debt.id, interestRate: debt.interestRate, currentBalance: debt.currentBalance, minimumPayment: debt.minimumPayment },
+                activeForTags
+              );
+              const progressPercent =
+                debt.originalBalance && debt.originalBalance > 0 && debt.originalBalance >= debt.currentBalance
+                  ? Math.max(0, Math.round((1 - debt.currentBalance / debt.originalBalance) * 100))
+                  : null;
+              const rateColor = getRateColor(debt.interestRate);
+
+              return (
+                <div
+                  key={debt.id}
+                  className="debt-card"
+                  style={{
+                    background: "var(--surface-card)",
+                    border: "1px solid var(--border-card)",
+                    borderRadius: "var(--radius-card)",
+                    padding: "20px 24px",
+                  }}
+                >
+                  {/* Top row */}
+                  <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "16px" }}>
+
+                    {/* Left: name + badges + rate */}
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      {/* Name row */}
+                      <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "6px", flexWrap: "wrap" }}>
+                        <span style={{
+                          width: "10px", height: "10px", borderRadius: "50%",
+                          background: rateColor, flexShrink: 0, display: "inline-block",
+                          boxShadow: `0 0 6px ${rateColor}60`,
+                        }} />
+                        <span style={{ fontSize: "15px", fontWeight: 600, color: "#FFFFFF", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                          {debt.creditorName}
                         </span>
-                      )}
+                      </div>
+
+                      {/* Badges row */}
+                      <div style={{ display: "flex", alignItems: "center", gap: "6px", flexWrap: "wrap", marginBottom: "8px", paddingLeft: "18px" }}>
+                        <span style={{ fontSize: "11px", fontWeight: 500, color: "#555555", background: "rgba(255,255,255,0.05)", borderRadius: "var(--radius-badge)", padding: "3px 8px" }}>
+                          {debt.debtType}
+                        </span>
+                        {tag && (
+                          <span style={{ fontSize: "11px", fontWeight: 600, color: tag.color, background: getTagBg(tag.color), borderRadius: "var(--radius-badge)", padding: "3px 10px" }}>
+                            {tag.label}
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Rate + min payment */}
+                      <div style={{ display: "flex", alignItems: "center", gap: "12px", paddingLeft: "18px" }}>
+                        <span style={{ fontSize: "13px", fontWeight: 600, color: rateColor }}>{debt.interestRate}% год.</span>
+                        <span style={{ fontSize: "13px", color: "#555555" }}>мин. {formatCurrency(debt.minimumPayment)}</span>
+                      </div>
                     </div>
 
-                    {/* Metrics row */}
-                    <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
-                      <span className="font-numeric text-base font-bold text-[#0F172A]">
+                    {/* Right: balance + edit */}
+                    <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "10px", flexShrink: 0 }}>
+                      <span style={{ fontSize: "28px", fontWeight: 700, letterSpacing: "-0.025em", color: "#FFFFFF", fontVariantNumeric: "tabular-nums", lineHeight: 1 }}>
                         {formatCurrency(debt.currentBalance)}
                       </span>
-                      <span className="text-xs text-[#667085]">{debt.interestRate}% год.</span>
-                      <span className="text-xs text-[#667085]">
-                        мин. {formatCurrency(debt.minimumPayment)}
-                      </span>
+                      <Link
+                        href={`/debts/${debt.id}/edit`}
+                        className="debt-edit-btn"
+                        style={{
+                          width: "28px", height: "28px", borderRadius: "6px",
+                          display: "flex", alignItems: "center", justifyContent: "center",
+                          color: "#8A8A8A",
+                        }}
+                      >
+                        <Pencil style={{ width: "13px", height: "13px" }} />
+                      </Link>
                     </div>
-
-                    {/* Progress bar */}
-                    {progressPercent !== null && (
-                      <div className="mt-3">
-                        <div className="flex justify-between text-[10px] text-[#94a3b8] mb-1">
-                          <span>Погашено</span>
-                          <span className="font-semibold">{progressPercent}%</span>
-                        </div>
-                        <div className="h-1.5 bg-[#F1F5F9] rounded-full overflow-hidden">
-                          <div
-                            className="h-full rounded-full transition-all duration-700"
-                            style={{
-                              width: `${progressPercent}%`,
-                              background:
-                                debt.interestRate > 20
-                                  ? "linear-gradient(90deg, #F79009, #FBBF24)"
-                                  : "linear-gradient(90deg, #6C63FF, #5B8DEF)",
-                            }}
-                          />
-                        </div>
-                      </div>
-                    )}
                   </div>
 
-                  <Link
-                    href={`/debts/${debt.id}/edit`}
-                    className="w-8 h-8 rounded-xl bg-[#F7F8FC] flex items-center justify-center text-[#667085] hover:bg-[#EEF2FF] hover:text-[#6C63FF] transition-colors shrink-0"
-                  >
-                    <Pencil className="w-3.5 h-3.5" />
-                  </Link>
+                  {/* Progress bar */}
+                  {progressPercent !== null && (
+                    <div style={{ marginTop: "16px" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", fontSize: "11px", color: "#555555", marginBottom: "6px" }}>
+                        <span>Погашено</span>
+                        <span style={{ fontWeight: 600, color: "#8A8A8A" }}>{progressPercent}%</span>
+                      </div>
+                      <div style={{ height: "6px", borderRadius: "3px", background: "rgba(255,255,255,0.06)", overflow: "hidden" }}>
+                        <div style={{
+                          width: `${progressPercent}%`, height: "100%", borderRadius: "3px",
+                          background: getProgressGradient(debt.interestRate),
+                          transition: "width 700ms ease",
+                        }} />
+                      </div>
+                    </div>
+                  )}
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
       )}
 
-      {/* Closed debts */}
+      {/* ── Closed debts ── */}
       {closedDebts.length > 0 && (
-        <div className="space-y-2.5">
-          <p className="text-[10px] font-bold text-[#94a3b8] uppercase tracking-widest px-1">
+        <div>
+          <p style={{ fontSize: "10.5px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.10em", color: "#555555", marginBottom: "12px", paddingLeft: "2px" }}>
             Закрытые · {closedDebts.length}
           </p>
-          {closedDebts.map((debt) => (
-            <div
-              key={debt.id}
-              className="bg-white border border-[#E7ECF3] rounded-2xl px-5 py-4 opacity-50 hover:opacity-70 transition-opacity"
-            >
-              <div className="flex items-center justify-between gap-3">
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="font-medium text-[#667085] truncate text-sm">{debt.creditorName}</span>
-                    <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-600 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded-full">
-                      <CheckCircle2 className="w-2.5 h-2.5" />
-                      Закрыт
-                    </span>
+          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+            {closedDebts.map((debt) => (
+              <div
+                key={debt.id}
+                className="debt-closed-card"
+                style={{
+                  background: "var(--surface-base)",
+                  border: "1px solid var(--border-subtle)",
+                  borderRadius: "var(--radius-card)",
+                  padding: "16px 24px",
+                  opacity: 0.5,
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "12px" }}>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
+                      <span style={{ fontSize: "14px", fontWeight: 500, color: "#8A8A8A", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                        {debt.creditorName}
+                      </span>
+                      <span style={{ display: "inline-flex", alignItems: "center", gap: "4px", fontSize: "11px", fontWeight: 600, color: "#4DFF91", background: "rgba(77,255,145,0.08)", borderRadius: "6px", padding: "3px 8px" }}>
+                        <CheckCircle2 style={{ width: "10px", height: "10px" }} />
+                        Закрыт
+                      </span>
+                    </div>
+                    <p style={{ fontSize: "12px", color: "#555555" }}>{debt.debtType}</p>
                   </div>
-                  <p className="text-xs text-[#94a3b8]">{debt.debtType}</p>
+                  <Link
+                    href={`/debts/${debt.id}/edit`}
+                    style={{
+                      width: "28px", height: "28px", borderRadius: "8px",
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                      color: "#555555", flexShrink: 0,
+                    }}
+                  >
+                    <Pencil style={{ width: "12px", height: "12px" }} />
+                  </Link>
                 </div>
-                <Link
-                  href={`/debts/${debt.id}/edit`}
-                  className="w-7 h-7 rounded-lg bg-[#F7F8FC] flex items-center justify-center text-[#94a3b8] hover:bg-[#E7ECF3] transition-colors shrink-0"
-                >
-                  <Pencil className="w-3 h-3" />
-                </Link>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       )}
     </div>

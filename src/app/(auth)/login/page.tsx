@@ -40,6 +40,8 @@ function LoginForm() {
     }
   }
 
+  const inputStyle = { borderColor: "var(--border-default)" };
+
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
       {error && (
@@ -49,7 +51,13 @@ function LoginForm() {
       )}
 
       <div className="space-y-1.5">
-        <Label htmlFor="email" className="text-[#0f172a] text-sm font-medium">Email</Label>
+        <Label
+          htmlFor="email"
+          className="text-[13px] font-medium"
+          style={{ color: "var(--text-primary)" }}
+        >
+          Email
+        </Label>
         <Input
           id="email"
           type="email"
@@ -58,12 +66,19 @@ function LoginForm() {
           onChange={(e) => setEmail(e.target.value)}
           required
           autoComplete="email"
-          className="h-11 rounded-xl border-[#e2e8f0] focus:border-[#3b82f6] bg-white"
+          className="h-11 rounded-[10px]"
+          style={inputStyle}
         />
       </div>
 
       <div className="space-y-1.5">
-        <Label htmlFor="password" className="text-[#0f172a] text-sm font-medium">Пароль</Label>
+        <Label
+          htmlFor="password"
+          className="text-[13px] font-medium"
+          style={{ color: "var(--text-primary)" }}
+        >
+          Пароль
+        </Label>
         <Input
           id="password"
           type="password"
@@ -72,21 +87,27 @@ function LoginForm() {
           onChange={(e) => setPassword(e.target.value)}
           required
           autoComplete="current-password"
-          className="h-11 rounded-xl border-[#e2e8f0] focus:border-[#3b82f6] bg-white"
+          className="h-11 rounded-[10px]"
+          style={inputStyle}
         />
       </div>
 
       <Button
         type="submit"
-        className="w-full h-11 rounded-xl bg-[#1e40af] hover:bg-[#1d3a9e] text-white font-semibold text-base transition-all duration-200"
+        className="w-full h-11 rounded-[10px] font-semibold text-[14px] transition-all duration-200"
+        style={{ background: "var(--accent-primary)", color: "#FFFFFF" }}
         disabled={loading}
       >
         {loading ? "Вход..." : "Войти"}
       </Button>
 
-      <p className="text-center text-sm text-[#64748b]">
+      <p className="text-center text-[13px]" style={{ color: "var(--text-secondary)" }}>
         Нет аккаунта?{" "}
-        <Link href="/register" className="text-[#1e40af] hover:text-[#1d3a9e] font-semibold transition-colors">
+        <Link
+          href="/register"
+          className="font-semibold transition-colors"
+          style={{ color: "var(--accent-primary)" }}
+        >
           Зарегистрироваться
         </Link>
       </p>
@@ -96,10 +117,24 @@ function LoginForm() {
 
 export default function LoginPage() {
   return (
-    <div className="bg-white rounded-2xl shadow-lg border border-[#e2e8f0] p-8 space-y-6">
+    <div
+      className="rounded-[18px] p-8 space-y-6"
+      style={{
+        background: "var(--bg-surface)",
+        border: "1px solid var(--border-light)",
+        boxShadow: "var(--shadow-card)",
+      }}
+    >
       <div className="space-y-1">
-        <h1 className="text-2xl font-bold text-[#0f172a] tracking-tight">Добро пожаловать</h1>
-        <p className="text-[#64748b] text-sm">Введите данные для входа в аккаунт</p>
+        <h1
+          className="text-[22px] font-bold tracking-tight"
+          style={{ color: "var(--text-primary)" }}
+        >
+          Добро пожаловать
+        </h1>
+        <p className="text-[13px]" style={{ color: "var(--text-tertiary)" }}>
+          Введите данные для входа в аккаунт
+        </p>
       </div>
       <Suspense fallback={null}>
         <LoginForm />

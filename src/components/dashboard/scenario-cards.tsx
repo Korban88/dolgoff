@@ -4,7 +4,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { formatCurrency, formatMonths } from "@/lib/debt-calculator";
 import type { PayoffResult } from "@/lib/debt-calculator";
-import { ArrowRight, TrendingDown, Clock } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 interface ScenarioCardsProps {
   presets: number[];
@@ -14,93 +14,105 @@ interface ScenarioCardsProps {
 
 export function ScenarioCards({ presets, baseResult, scenarioResults }: ScenarioCardsProps) {
   return (
-    <div id="scenario-cards" className="space-y-3">
+    <div className="space-y-3 animate-fade-in-up stagger-2">
       <div className="flex items-center justify-between">
-        <p className="text-sm font-semibold text-[#0F172A]">Сценарии доплат</p>
+        <p style={{ fontSize: "14px", fontWeight: 600, color: "#FFFFFF" }}>
+          Сценарии доплат
+        </p>
         <Link
           href="/simulator"
-          className="text-xs font-medium text-[#6C63FF] hover:underline underline-offset-2 flex items-center gap-1 transition-colors"
+          className="flex items-center gap-1 transition-colors"
+          style={{ fontSize: "12px", fontWeight: 500, color: "#555555" }}
+          onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "#B5F562")}
+          onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = "#555555")}
         >
-          Свой вариант <ArrowRight className="w-3 h-3" />
+          Свой расчёт <ArrowRight className="w-3 h-3" />
         </Link>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <div className="grid grid-cols-3 gap-4">
         {presets.map((amount, idx) => {
           const result = scenarioResults[amount];
           if (!result) return null;
           const savedMonths = baseResult.totalMonths - result.totalMonths;
-          const savedMoney = baseResult.totalInterestPaid - result.totalInterestPaid;
+          const savedMoney  = baseResult.totalInterestPaid - result.totalInterestPaid;
           const isHighlight = idx === 1;
 
           return (
             <motion.div
               key={amount}
-              whileHover={{ scale: 1.025, y: -2 }}
-              transition={{ type: "spring", stiffness: 400, damping: 25 }}
+              whileHover={{ scale: 1.02, boxShadow: "var(--shadow-card-hover)" }}
+              transition={{ type: "spring", stiffness: 400, damping: 30 }}
+              style={{ position: "relative" }}
             >
+              {isHighlight && (
+                <span
+                  style={{
+                    position: "absolute",
+                    top: "-12px",
+                    left: "50%",
+                    transform: "translateX(-50%)",
+                    background: "#B5F562",
+                    color: "#0A0A0A",
+                    fontSize: "11px",
+                    fontWeight: 700,
+                    textTransform: "uppercase",
+                    letterSpacing: "0.05em",
+                    borderRadius: "6px",
+                    padding: "3px 10px",
+                    whiteSpace: "nowrap",
+                    zIndex: 1,
+                  }}
+                >
+                  Быстрый старт
+                </span>
+              )}
+
               <Link
                 href={`/simulator?extra=${amount}`}
-                className={`relative block rounded-2xl p-4 transition-shadow duration-200 ${
-                  isHighlight
-                    ? "text-white"
-                    : "bg-white border border-[#E7ECF3] shadow-card hover:shadow-card-hover"
-                }`}
-                style={
-                  isHighlight
-                    ? {
-                        background: "linear-gradient(135deg, #6C63FF, #5B8DEF)",
-                        boxShadow: "0 6px 24px rgba(108,99,255,0.30), 0 2px 6px rgba(108,99,255,0.18)",
-                      }
-                    : undefined
-                }
+                className="relative block p-5"
+                style={{
+                  background: isHighlight ? "var(--surface-elevated)" : "var(--surface-card)",
+                  border: isHighlight ? "1px solid #B5F562" : "1px solid var(--border-card)",
+                  borderRadius: "var(--radius-card)",
+                  boxShadow: "var(--shadow-card)",
+                }}
               >
-                {isHighlight && (
-                  <span className="absolute -top-2.5 left-4 text-[9px] font-bold bg-[#12B76A] text-white px-2 py-0.5 rounded-full uppercase tracking-wider shadow-sm">
-                    Лучший старт
-                  </span>
-                )}
-
                 <p
-                  className={`text-xs font-semibold mb-3 ${
-                    isHighlight ? "text-white/70" : "text-[#6C63FF]"
-                  }`}
+                  style={{
+                    fontSize: "12px",
+                    fontWeight: 500,
+                    textTransform: "uppercase",
+                    letterSpacing: "0.05em",
+                    color: "#555555",
+                    marginBottom: "12px",
+                  }}
                 >
                   +{formatCurrency(amount)}/мес
                 </p>
 
                 {savedMonths > 0 && (
-                  <div className="flex items-center gap-1.5 mb-1.5">
-                    <Clock
-                      className={`w-3.5 h-3.5 shrink-0 ${
-                        isHighlight ? "text-white/70" : "text-[#12B76A]"
-                      }`}
-                    />
-                    <p
-                      className={`font-numeric text-xl font-bold leading-none ${
-                        isHighlight ? "text-white" : "text-[#0F172A]"
-                      }`}
-                    >
-                      −{formatMonths(savedMonths)}
-                    </p>
-                  </div>
+                  <p
+                    className="tabular-nums leading-none"
+                    style={{
+                      fontSize: "28px",
+                      fontWeight: 800,
+                      letterSpacing: "-0.03em",
+                      color: "#FFFFFF",
+                      marginBottom: "4px",
+                    }}
+                  >
+                    −{formatMonths(savedMonths)}
+                  </p>
                 )}
 
                 {savedMoney > 0 && (
-                  <div className="flex items-center gap-1.5">
-                    <TrendingDown
-                      className={`w-3 h-3 shrink-0 ${
-                        isHighlight ? "text-white/60" : "text-[#12B76A]"
-                      }`}
-                    />
-                    <p
-                      className={`font-numeric text-xs font-semibold ${
-                        isHighlight ? "text-white/80" : "text-[#12B76A]"
-                      }`}
-                    >
-                      экономия {formatCurrency(savedMoney)}
-                    </p>
-                  </div>
+                  <p
+                    className="tabular-nums"
+                    style={{ fontSize: "12px", fontWeight: 600, marginTop: "8px", color: "#a3e635" }}
+                  >
+                    ✧ экономия {formatCurrency(savedMoney)}
+                  </p>
                 )}
               </Link>
             </motion.div>

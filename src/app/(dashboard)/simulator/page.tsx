@@ -43,8 +43,8 @@ export default async function SimulatorPage({
           </p>
         </div>
         <Button
-          render={<Link href="/debts/new" />}
-          className="bg-[#1e40af] hover:bg-[#1d3a9e] text-white rounded-xl px-6 h-11 text-base font-semibold shadow-sm shadow-blue-200 transition-all duration-200"
+          nativeButton={false} render={<Link href="/debts/new" />}
+          className="bg-[#3B5BFE] hover:bg-[#2D4AE0] text-white rounded-xl px-6 h-11 text-base font-semibold shadow-sm shadow-blue-200 transition-all duration-200"
         >
           Добавить долг
         </Button>
